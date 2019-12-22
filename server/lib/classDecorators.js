@@ -62,6 +62,7 @@ const Events = (Events) => class extends Events {
         };
 
         this._listeners = {};
+        this._watchers = {};
 
         this._registerModule("events");
     }
@@ -176,6 +177,8 @@ const Events = (Events) => class extends Events {
                 callback(key, value, target);
             }
         });
+
+        this._watchers[ uuid ] = prop;
         
         return uuid;
     }
@@ -183,6 +186,7 @@ const Events = (Events) => class extends Events {
         // throw new Error("This method has not been setup yet.  Implement a search system, maybe use UUIDs?");
         if(typeof this._listeners[ "prop-change" ] === "object") {
             delete this._listeners[ "prop-change" ][ uuid ];
+            delete this._watchers[ uuid ];
             
             return true;
         }

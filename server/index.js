@@ -5,12 +5,32 @@ const aWss = expressWs.getWss("/");
 const QRCode = require("qrcode");
 
 import ChatModule from "./modules/chat/package";
+import AppManager from "./modules/AppManager";
+
+const Parent = new AppManager();
+Parent.AddHandler(( [ parent, e, eventResult ], [ listenerEvent, listenerThis ]) => {
+    if(e === "channel-message") {
+        let [ eventThis, msg, channel ] = eventResult;
+
+        console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
+    }
+});
+Parent.AddHandler(( [ parent, e, eventResult ], [ listenerEvent, listenerThis ]) => {
+    if(e === "channel-message") {
+        let [ eventThis, msg, channel ] = eventResult;
+
+        console.log("CATTSTSATTSTSTSTS");
+    }
+});
 
 console.log("=================");
-const CM = ChatModule.create();
-CM.on("channel-message", (target, msg, channel) => {
-    console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
-});
+const CM = ChatModule.create(Parent);
+CM.SendRoom(1, 2, 3);
+
+//TODO Take this sample listener and register parent on initialization
+// CM.on("channel-message", (target, msg, channel) => {
+//     console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
+// });
 CM.AddTeamChannel("Cats");
 let Cats = CM.prop("Team")[ "Cats" ];
 Cats.AddMessage({
@@ -26,6 +46,9 @@ Room.AddMessage({
     author: "SERVER",
     content: "Greetings!"
 });
+CM.SendRoom("SERV3R", "H4X0rz");
+CM.SendTeam("Cats", "Author1", "Cats111");
+CM.SendTeam("Dogs", "Author2", "Cats222");
 console.log("=================");
 
 function GenerateUUID() {

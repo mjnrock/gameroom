@@ -24,6 +24,8 @@ class Channel extends ClassDecorators.StateEvents {
             }
 
             return false;
+        } else if(arguments.length > 1) {
+            return this.AddMessage(new Message(...arguments));
         }
 
         return this;
