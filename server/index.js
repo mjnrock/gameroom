@@ -4,6 +4,30 @@ const expressWs = require("express-ws")(server);
 const aWss = expressWs.getWss("/");
 const QRCode = require("qrcode");
 
+import ChatModule from "./modules/chat/package";
+
+console.log("=================");
+const CM = ChatModule.create();
+CM.on("channel-message", (target, msg, channel) => {
+    console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
+});
+CM.AddTeamChannel("Cats");
+let Cats = CM.prop("Team")[ "Cats" ];
+Cats.AddMessage({
+    author: "Matt",
+    content: "Hello!"
+});
+Cats.AddMessage({
+    author: "Sarah",
+    content: "Hi there!"
+});
+let Room = CM.prop("Room");
+Room.AddMessage({
+    author: "SERVER",
+    content: "Greetings!"
+});
+console.log("=================");
+
 function GenerateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == "x" ? r : (r & 0x3 | 0x8);
