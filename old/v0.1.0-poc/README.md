@@ -1,4 +1,4 @@
-# Version 0.1.0a
+# Version 0.1.0-poc
 This is a **WebSockets** proof-of-concept that should allow a server running `index.js` to server one-to-many `client/controller.html` files, or one-to-many `client/viewport.html` files.
 
 ## Pong
