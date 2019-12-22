@@ -8,6 +8,10 @@ const PORT = 3000;
 const App = {
     Loop: null,
     Clients: {},
+    Size: {
+        Width: 1000,
+        Height: 500
+    },
     Score: {
         1: 0,
         2: 0
@@ -86,15 +90,15 @@ server.ws("/", function (ws, req) {
                 if(App.Players[ data.player ].Y < 0) {                        
                     App.Players[ data.player ].Y = 0;
                 }
-                if(App.Players[ data.player ].Y > 500) {
-                    App.Players[ data.player ].Y = 500;
+                if(App.Players[ data.player ].Y > App.Size.Height) {
+                    App.Players[ data.player ].Y = App.Size.Height;
                 }
 
                 if(data.player == 1) {
-                    App.Players[ data.player ].X = 100;
+                    App.Players[ data.player ].X = 0 + 100;
                 }
                 if(data.player == 2) {
-                    App.Players[ data.player ].X = 400;
+                    App.Players[ data.player ].X = App.Size.Width - 100;
                 }
 
                 SendViewport();
@@ -117,8 +121,8 @@ server.ws("/", function (ws, req) {
                     if(App.Players[ data.player ].Y < 0) {                        
                         App.Players[ data.player ].Y = 0;
                     }
-                    if(App.Players[ data.player ].Y > 500) {
-                        App.Players[ data.player ].Y = 500;
+                    if(App.Players[ data.player ].Y > App.Size.Height) {
+                        App.Players[ data.player ].Y = App.Size.Height;
                     }
 
                     if(data.player == 1) {
@@ -161,8 +165,8 @@ function SendAllMessage(obj) {
 const SERVER = server.listen(PORT);
 
 function ResetBall() {
-    App.Ball.X = 250;
-    App.Ball.Y = 250;
+    App.Ball.X = App.Size.Width / 2;
+    App.Ball.Y = App.Size.Height / 2;
     App.Ball.Hx = true;
     App.Ball.Hy = true;
 }
@@ -178,7 +182,7 @@ App.Loop = setInterval(() => {
     let pw = 25,
         ph = 100,
         bw = 10,
-        step = 5;
+        step = 10;
 
     let bx = App.Ball.X,
         by = App.Ball.Y,
@@ -217,13 +221,13 @@ App.Loop = setInterval(() => {
     if(bx - bw <= 0) {
         App.Ball.Hx = !App.Ball.Hx;
     }
-    if(bx + bw >= 500) {
+    if(bx + bw >= App.Size.Width) {
         App.Ball.Hx = !App.Ball.Hx;
     }
     if(by - bw <= 0) {
         App.Ball.Hy = !App.Ball.Hy;
     }
-    if(by + bw >= 500) {
+    if(by + bw >= App.Size.Height) {
         App.Ball.Hy = !App.Ball.Hy;
     }
 

@@ -38,10 +38,14 @@
         </div>
 
         <div class="form-control">
-            <canvas width="500" height="500"></canvas>
+            <canvas width="1000" height="500"></canvas>
         </div>
 
         <script>
+            const Size = {
+                Width: 1000,
+                Height: 500
+            };
             const canvas = $("canvas");
             const ctx = canvas[0].getContext("2d");
             const ws = new WebSocket("ws://192.168.86.74:3000");
@@ -84,7 +88,7 @@
                             bx = +data.ball.X,
                             by = +data.ball.Y;
                             
-                        ctx.clearRect(0, 0, 500, 500);
+                        ctx.clearRect(0, 0, Size.Width, Size.Height);
                         ctx.fillStyle = "#2477c9";
                         ctx.fillRect(x1 - 25, y1 - 25, 50, 100);
                         ctx.fillStyle = "#c92424";
