@@ -8,14 +8,14 @@ import ChatModule from "./modules/chat/package";
 import AppManager from "./modules/AppManager";
 
 const Parent = new AppManager();
-Parent.AddHandler(( [ parent, e, eventResult ], [ listenerEvent, listenerThis ]) => {
+Parent.AddHandler(( [ eventThis, e, eventResult ], [ listenerEvent, listenerThis ]) => {
     if(e === "channel-message") {
         let [ eventThis, msg, channel ] = eventResult;
 
         console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
     }
 });
-Parent.AddHandler(( [ parent, e, eventResult ], [ listenerEvent, listenerThis ]) => {
+Parent.AddHandler(( [ eventThis, e, eventResult ], [ listenerEvent, listenerThis ]) => {
     if(e === "channel-message") {
         let [ eventThis, msg, channel ] = eventResult;
 

@@ -19,13 +19,6 @@ class AModuleManager extends ClassDecorators.StateEvents {
                     // console.log(event);
 
                     this.listen(event, ( result, [ _event, _this ]) => {
-                        // console.log(a1);
-                        // console.log(a2);
-                        // console.log(a3);
-                        // console.log(b1);
-                        // console.log(b2);
-                        // console.log(b3);
-                        // console.log(c);
                         this.parent.call("module-message", event, result);
                     });
                 }
