@@ -78,12 +78,12 @@ expressWs.getWss().on("connection", ws => {
 server.ws("/", function (ws, req) {
     ws.on("message", function (msg) {
         try {
-            console.log(msg);
+            // console.log(msg);
 
             let data = JSON.parse(msg);
 
             if(data.event === "viewport") {
-                SendViewport();
+                // SendViewport();
             } else if(data.event === "touch") {
                 App.Players[ data.player ].Y = +data.y;
                     
@@ -101,7 +101,7 @@ server.ws("/", function (ws, req) {
                     App.Players[ data.player ].X = App.Size.Width - 100;
                 }
 
-                SendViewport();
+                // SendViewport();
             } else if(data.event === "move") {
                 let { direction, magnitude } = data;
 
@@ -133,7 +133,7 @@ server.ws("/", function (ws, req) {
                     }
                 }
 
-                SendViewport();
+                // SendViewport();
             }
         } catch(e) {
             console.log(`[Message Failed]: `, JSON.stringify(msg));
@@ -246,6 +246,8 @@ App.Loop = setInterval(() => {
             ResetBall();
         }
     }
+}, 1000 / 10);
 
+setInterval(() => {
     SendViewport();
-}, 1000 / 25);
+}, 1000 / 20);
