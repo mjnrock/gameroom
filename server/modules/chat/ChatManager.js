@@ -1,10 +1,10 @@
-import AModuleManager from "./../AModuleManager";
+import AManager from "./../AManager";
 import ClassDecorators from "../../lib/classDecorators";
 
 import Channel from "./Channel";
 import Message from "./Message";
 
-class ChatManager extends AModuleManager {
+class ChatManager extends AManager {
     constructor(parent) {
         super(
             "chat",
@@ -17,8 +17,6 @@ class ChatManager extends AModuleManager {
         // this.prop("Player", {});
 
         this.on("channel-message");
-
-        this.mappings = {};
         
         this.MassSubcribeParent([
             "channel-message"   //  => [ this, last message, channel ]
@@ -33,8 +31,6 @@ class ChatManager extends AModuleManager {
 
                 this.call("channel-message", lastMsg, Room);
             });
-
-        this.mappings[ uuid ] = "Messages";
     }
 
     CreateChannel(prop, name) {
@@ -50,8 +46,6 @@ class ChatManager extends AModuleManager {
             this.call("channel-message", lastMsg, channels[ name ]);
         });
 
-        this.mappings[ uuid ] = "Messages";
-
         return channels[ name ];
     }
     DestroyChannel(uuid, prop, name) {
@@ -61,8 +55,6 @@ class ChatManager extends AModuleManager {
 
         this.prop(prop, channels);
         this.unwatch(this.mappings[ uuid ], uuid);
-
-        delete this.mappings[ uuid ];
 
         return this;
     }

@@ -5,21 +5,14 @@ const aWss = expressWs.getWss("/");
 const QRCode = require("qrcode");
 
 import ChatModule from "./modules/chat/package";
-import AppManager from "./modules/AppManager";
+import ModuleManager from "./modules/ModuleManager";
 
-const Parent = new AppManager();
+const Parent = new ModuleManager();
 Parent.AddHandler(( [ eventThis, e, eventResult ], [ listenerEvent, listenerThis ]) => {
     if(e === "channel-message") {
         let [ eventThis, msg, channel ] = eventResult;
 
         console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
-    }
-});
-Parent.AddHandler(( [ eventThis, e, eventResult ], [ listenerEvent, listenerThis ]) => {
-    if(e === "channel-message") {
-        let [ eventThis, msg, channel ] = eventResult;
-
-        console.log("CATTSTSATTSTSTSTS");
     }
 });
 

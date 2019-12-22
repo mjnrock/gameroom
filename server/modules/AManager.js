@@ -1,6 +1,6 @@
-import ClassDecorators from "./../lib/classDecorators";
+import ClassDecorators from "../lib/classDecorators";
 
-class AModuleManager extends ClassDecorators.StateEvents {
+class AManager extends ClassDecorators.StateEvents {
     constructor(name, title, parent) {
         super();
 
@@ -13,7 +13,7 @@ class AModuleManager extends ClassDecorators.StateEvents {
 
     MassSubcribeParent(events = []) {
         try {
-            if(this.parent instanceof AModuleManager) {
+            if(this.parent instanceof AManager) {
                 for(let i in events) {
                     let event = events[ i ];
                     // console.log(event);
@@ -23,7 +23,7 @@ class AModuleManager extends ClassDecorators.StateEvents {
                     });
                 }
             } else {
-                console.log(`[Warning]: AModuleManager<${ this.UUID() }> has no parent.`);
+                console.log(`[Warning]: AManager<${ this.UUID() }> has no parent.`);
             }
         } catch(e) {
             console.log(`[Error]: You probably sent a bad mapping to the ModuleManager.  Use [ { event: fn }, ... ] syntax.`);
@@ -31,4 +31,4 @@ class AModuleManager extends ClassDecorators.StateEvents {
     }
 }
 
-export default AModuleManager;
+export default AManager;
