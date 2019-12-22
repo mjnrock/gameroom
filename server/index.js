@@ -18,7 +18,6 @@ Parent.AddHandler(( [ eventThis, e, eventResult ], [ listenerEvent, listenerThis
 
 console.log("=================");
 const CM = ChatModule.create(Parent);
-CM.SendRoom(1, 2, 3);
 
 //TODO Take this sample listener and register parent on initialization
 // CM.on("channel-message", (target, msg, channel) => {
