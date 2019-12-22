@@ -64,6 +64,20 @@
                     if(data.event === "uuid") {
                         UUID = data.uuid;
                         $("#data-uuid").html(UUID);
+
+                        let img = new Image();
+                        img.onload = () => {
+                            ctx.drawImage(img, 0, 0);
+                            ctx.fillText("Controller", 55, 150);
+                        };
+                        img.src = data.qr.c;
+
+                        let img2 = new Image();
+                        img2.onload = () => {
+                            ctx.drawImage(img2, 200, 0);
+                            ctx.fillText("Viewport", 255, 150);
+                        };
+                        img2.src = data.qr.v;
                     }
 
                     if(data.event === "score") {

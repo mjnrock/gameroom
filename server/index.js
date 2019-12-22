@@ -1,11 +1,19 @@
 const express = require("express");
 const server = express();
 const expressWs = require("express-ws")(server);
-const aWss = expressWs.getWss('/');
-const path = require("path");
+const aWss = expressWs.getWss("/");
+const QRCode = require("qrcode");
 
-const PORT = 3000;
 const App = {
+    Server: {
+        Port: 3000,
+        IP: null,
+        QRCode: {
+            Controller: null,
+            Viewport: null
+        }
+    },
+
     Loop: null,
     Clients: {},
     Size: {
@@ -34,7 +42,16 @@ const App = {
     }
 };
 require("dns").lookup(require("os").hostname(), function(err, ip, fam) {
-    console.log(`Started Gameroom server at ${ ip }:${ PORT }`);
+    App.Server.IP = ip;
+    QRCode
+        .toDataURL(`http://${ ip }:${ App.Server.Port }`, { errorCorrectionLevel: "H" })    // { ..., width: # } will set pixel width
+        .then(data => App.Server.QRCode.Controller = data);
+
+    QRCode
+        .toDataURL(`http://${ ip }:${ App.Server.Port }/v`, { errorCorrectionLevel: "H" })  // { ..., width: # } will set pixel width
+        .then(data => App.Server.QRCode.Viewport = data);
+
+    console.log(`Started Gameroom server at ${ ip }:${ App.Server.Port }`);
 });
 
 function GenerateUUID() {
@@ -66,9 +83,12 @@ expressWs.getWss().on("connection", ws => {
 
     ws.send(JSON.stringify({
         event: "uuid",
-        uuid
+        uuid,
+        qr: {
+            c: App.Server.QRCode.Controller,
+            v: App.Server.QRCode.Viewport
+        }
     }));
-    SendViewport();
 
     console.log(`Added: ${ uuid }`);
     console.log(`Size: ${ Object.keys(App.Clients).length }`);
@@ -78,176 +98,17 @@ expressWs.getWss().on("connection", ws => {
 server.ws("/", function (ws, req) {
     ws.on("message", function (msg) {
         try {
-            // console.log(msg);
-
             let data = JSON.parse(msg);
-
-            if(data.event === "viewport") {
-                // SendViewport();
-            } else if(data.event === "touch") {
-                App.Players[ data.player ].Y = +data.y;
-                    
-                if(App.Players[ data.player ].Y < 0) {                        
-                    App.Players[ data.player ].Y = 0;
-                }
-                if(App.Players[ data.player ].Y > App.Size.Height) {
-                    App.Players[ data.player ].Y = App.Size.Height;
-                }
-
-                if(data.player == 1) {
-                    App.Players[ data.player ].X = 0 + 100;
-                }
-                if(data.player == 2) {
-                    App.Players[ data.player ].X = App.Size.Width - 100;
-                }
-
-                // SendViewport();
-            } else if(data.event === "move") {
-                let { direction, magnitude } = data;
-
-                if(direction === "x") {
-                    // if(magnitude === "+") {
-                    //     App.Players[ data.player ].X += 5;
-                    // } else if(magnitude === "-") {
-                    //     App.Players[ data.player ].X -= 5;
-                    // }
-                } else if(direction === "y") {
-                    if(magnitude === "+") {
-                        App.Players[ data.player ].Y += 5;
-                    } else if(magnitude === "-") {
-                        App.Players[ data.player ].Y -= 5;
-                    }
-                    
-                    if(App.Players[ data.player ].Y < 0) {                        
-                        App.Players[ data.player ].Y = 0;
-                    }
-                    if(App.Players[ data.player ].Y > App.Size.Height) {
-                        App.Players[ data.player ].Y = App.Size.Height;
-                    }
-
-                    if(data.player == 1) {
-                        App.Players[ data.player ].X = 100;
-                    }
-                    if(data.player == 2) {
-                        App.Players[ data.player ].X = 400;
-                    }
-                }
-
-                // SendViewport();
-            }
         } catch(e) {
             console.log(`[Message Failed]: `, JSON.stringify(msg));
         }
     });
 });
 
-function SendViewport() {
-    SendAllMessage({
-        event: "viewport",
-        clients: Object.keys(App.Clients),
-        players: App.Players,
-        ball: App.Ball
-    });
-}
-
-function SendScore() {
-    SendAllMessage({
-        event: "score",
-        score: App.Score
-    });
-}
 function SendAllMessage(obj) {
     aWss.clients.forEach(function (client) {
         client.send(JSON.stringify(obj));
     });
 }
 
-const SERVER = server.listen(PORT);
-
-function ResetBall() {
-    App.Ball.X = App.Size.Width / 2;
-    App.Ball.Y = App.Size.Height / 2;
-    App.Ball.Hx = true;
-    App.Ball.Hy = true;
-}
-function isCollision(a, b) {
-    return !(
-        ((a.Y + a.H) < (b.Y)) ||
-        (a.Y > (b.Y + b.H)) ||
-        ((a.X + a.W) < b.X) ||
-        (a.X > (b.X + b.W))
-    );
-}
-App.Loop = setInterval(() => {
-    let pw = 25,
-        ph = 100,
-        bw = 10,
-        step = 10;
-
-    let bx = App.Ball.X,
-        by = App.Ball.Y,
-        x1 = App.Players[ "1" ].X,
-        y1 = App.Players[ "1" ].Y,
-        x2 = App.Players[ "2" ].X,
-        y2 = App.Players[ "2" ].Y;
-
-    if(isCollision({
-        X: bx,
-        Y: by,
-        H: bw,
-        W: bw
-    }, {
-        X: x1,
-        Y: y1,
-        H: ph,
-        W: pw
-    })) {
-        App.Ball.Hx = !App.Ball.Hx;
-    }
-    if(isCollision({
-        X: bx + bw,
-        Y: by,
-        H: bw,
-        W: bw
-    }, {
-        X: x2,
-        Y: y2,
-        H: ph,
-        W: pw
-    })) {
-        App.Ball.Hx = !App.Ball.Hx;
-    }
-
-    if(bx - bw <= 0) {
-        App.Ball.Hx = !App.Ball.Hx;
-    }
-    if(bx + bw >= App.Size.Width) {
-        App.Ball.Hx = !App.Ball.Hx;
-    }
-    if(by - bw <= 0) {
-        App.Ball.Hy = !App.Ball.Hy;
-    }
-    if(by + bw >= App.Size.Height) {
-        App.Ball.Hy = !App.Ball.Hy;
-    }
-
-    App.Ball.X += (App.Ball.Hx ? 1 : -1) * step;
-    App.Ball.Y += (App.Ball.Hy ? 1 : -1) * step;
-
-    if(App.Players[ "1" ].X > 0 && App.Players[ "2" ].X > 0) {
-        if(App.Ball.X < App.Players[ "1" ].X + pw) {
-            App.Score[ "2" ] += 1;
-            SendScore();
-            ResetBall();
-        }
-        if(App.Ball.X > App.Players[ "2" ].X) {
-            App.Score[ "1" ] += 1;
-            SendScore();
-            ResetBall();
-        }
-    }
-}, 1000 / 10);
-
-setInterval(() => {
-    SendViewport();
-}, 1000 / 20);
+const SERVER = server.listen(App.Server.Port);
