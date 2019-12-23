@@ -1,17 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
 import { Provider } from "mobx-react";
 
 import App from "./App";
 
-import ExampleStore from "./store/ExampleStore";
-const store = {
-    ExampleStore
-}
+import ExampleStore from "./stores/ExampleStore";
 
-ReactDOM.render(
+let store = window.store = {
+    ExampleStore
+};
+
+const Root = (
     <Provider store={ store }>
         <App />
-    </Provider>,
+    </Provider>
+);
+
+ReactDOM.render(
+    Root,
     document.getElementById("root")
 );
