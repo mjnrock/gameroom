@@ -1,5 +1,5 @@
 import Peer from "peer";
-import ClassDecorators from "./animus/classDecorators";
+import ClassDecorators from "./animus/classDecorators.js";
 
 class PeerClient extends ClassDecorators.StateEvents {
     constructor(server = null) {

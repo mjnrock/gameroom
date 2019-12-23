@@ -62,6 +62,8 @@ require("dns").lookup(require("os").hostname(), function(err, ip, fam) {
     console.log(`Started Gameroom server at ${ ip }:${ App.Server.Port }`);
 });
 
+console.log(__dirname);
+server.use("/", express.static(__dirname));
 server.set("trust proxy", true);
 // app.use(function (req, res, next) {
 //     console.log("middleware");
