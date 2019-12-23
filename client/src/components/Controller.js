@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import PeerClient from "./lib/PeerClient";
-
-let pc = new PeerClient();
-console.log(pc);
-
 @inject("store")
 @observer
-class App extends Component {
+class Controller extends Component {
     render() {
         //! MUST directly point to the name [ correct: console.log(ExampleStore.name), wrong: console.log(ExampleStore) // will return {} ]
         const { ExampleStore } = this.props.store;
@@ -16,10 +11,17 @@ class App extends Component {
 
         return (
             <div>
-                Hello
+                <div
+                    id="peer-id"
+                    class="form-control"
+                ></div>
+        
+                <input id="connection-id" type="text" />
+        
+                <button id="data-send" class="btn btn-lg btn-primary">Send</button>
             </div>
         )
     }
 }
 
-export default App;
+export default Controller;

@@ -7,7 +7,7 @@ import App from "./App";
 
 import ExampleStore from "./stores/ExampleStore";
 
-let store = window.store = {
+const store = window.store = {
     ExampleStore
 };
 
