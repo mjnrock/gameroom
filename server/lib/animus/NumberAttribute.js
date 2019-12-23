@@ -1,4 +1,4 @@
-import { Clamp } from "./helper";
+import { Clamp } from "../helper";
 import Attribute from "./Attribute";
 
 export default class NumberAttribute extends Attribute {

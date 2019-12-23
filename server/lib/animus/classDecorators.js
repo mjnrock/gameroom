@@ -1,4 +1,4 @@
-import { GenerateUUID } from "./helper";
+import { GenerateUUID } from "../helper";
 import Subscription from "./Subscription";
 
 //TODO Use Subscriptions to track this any watching behavior, utilize the Subscription specific to each class

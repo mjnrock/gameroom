@@ -1,4 +1,4 @@
-import { GenerateUUID } from "./helper";
+import { GenerateUUID } from "../helper";
 
 export default class Subscription {
     constructor(subscribor, subscribee) {
