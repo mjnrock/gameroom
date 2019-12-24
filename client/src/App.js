@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import Lux from "@lespantsfancy/lux";
 
-import PeerClient from "./lib/PeerClient";
+console.log(Lux);
 
-let pc = new PeerClient();
-console.log(pc);
+// import PeerClient from "./../../lib/PeerClient";
+
+// let pc = new PeerClient();
+// console.log(pc);
 
 @inject("store")
 @observer

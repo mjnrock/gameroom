@@ -4,6 +4,7 @@ const server = express();
 // const aWss = expressWs.getWss("/");
 const { ExpressPeerServer } = require("peer");
 const QRCode = require("qrcode");
+const Lux = require("@lespantsfancy/lux");
 
 function GenerateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {

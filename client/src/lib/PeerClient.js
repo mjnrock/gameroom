@@ -1,7 +1,7 @@
-import ClassDecorators from "./animus/classDecorators";
 import Peer from "peerjs";
+import Lux from "@lespantsfancy/lux";
 
-class PeerClient extends ClassDecorators.StateEvents {
+class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
     constructor(server = null) {
         super();
 
@@ -22,7 +22,7 @@ class PeerClient extends ClassDecorators.StateEvents {
                 close: null,
                 error: null
             }
-        }
+        };
 
         this.prop("Connection", {});
         this.prop("Peer", []);
