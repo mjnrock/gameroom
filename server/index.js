@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const server = express();
 // const expressWs = require("express-ws")(server);
@@ -63,8 +65,8 @@ require("dns").lookup(require("os").hostname(), function(err, ip, fam) {
     console.log(`Started Gameroom server at ${ ip }:${ App.Server.Port }`);
 });
 
-console.log(__dirname);
-server.use("/", express.static(__dirname));
+// server.use("/", express.static(__dirname));
+server.use(express.static(path.join(__dirname, "/public")));
 server.set("trust proxy", true);
 // app.use(function (req, res, next) {
 //     console.log("middleware");
@@ -72,7 +74,10 @@ server.set("trust proxy", true);
 //     return next();
 // });
 
-server.get("/", (req, res) => {
+// server.get("/", (req, res) => {
+//     res.sendFile(`${ __dirname }/public/index.html`);
+// });
+server.get("/c", (req, res) => {
     res.sendFile(`${ __dirname }/client/controller.html`);
 });
 server.get("/v", (req, res) => {
@@ -117,7 +122,11 @@ server.get("/v", (req, res) => {
 const SERVER = server.listen(App.Server.Port);
 
 const peerOptions = {
-    debug: true
+    debug: true,
+    ssl: {
+        key: fs.readFileSync("./certificates/key.pem", "utf8"),
+        cert: fs.readFileSync("./certificates/cert.pem", "utf8")
+    }
 };
 const PEER_SERVER = ExpressPeerServer(SERVER, peerOptions);
 server.use("/peer", PEER_SERVER);

@@ -12,10 +12,15 @@ const store = window.store = {
 };
 
 const Root = (
-    <Provider store={ store }>
-        <App />
-    </Provider>
+    <div>
+        Hello
+    </div>
 );
+// const Root = (
+//     <Provider store={ store }>
+//         <App />
+//     </Provider>
+// );
 
 ReactDOM.render(
     Root,

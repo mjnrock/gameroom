@@ -6,7 +6,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         super();
 
         this.Server = server || {
-            host: "192.168.86.74",
+            host: "https://192.168.86.74",
             port: 3000,
             path: "/peer"
         };
@@ -43,7 +43,12 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         this.on("connection-close");
 
 
-        this.prop("Me", new Peer(this.UUID(), this.Server));
+        // this.prop("Me", new Peer(this.UUID(), this.Server));
+        this.prop("Me", new Peer(this.UUID(), {
+            ...this.Server,
+            debug: 3
+        }));
+
         this.prop("Me").on("open", peerId => {
             this.call("peer-open", peerId);
         });
