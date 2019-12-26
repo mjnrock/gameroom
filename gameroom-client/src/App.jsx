@@ -28,11 +28,9 @@ class App extends Component {
                 console.log("Error parsing JSON from Peer data");
             }
         };
-        this.PeerClient.Handlers.Connect.open = () => {
-            // console.log("****************************");
-            // console.log(this.PeerClient);
-            // console.log("****************************");
 
+        //TODO Something about this implementation doesn't feel right, but at a basic level it seems to work
+        this.PeerClient.Handlers.Connect.open = () => {
             const ChatManager = this.props.store.ChatStore.Manager;
 
             this.PeerClient.BroadcastConnect({                      // Send to peer message queue

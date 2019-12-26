@@ -11,9 +11,9 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
     }
 
     SyncChannel(messages) {        
-        console.log("****************************");
-        console.log("INSIDE");
-        console.log("****************************");
+        // console.log("****************************");
+        // console.log("INSIDE");
+        // console.log("****************************");
 
         let A = this.prop("Messages"),
             B = messages,
@@ -29,46 +29,16 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
             A.push(Bo[ diff[ key ] ]);
         }
         
-        console.log("****************************");
-        console.log(A);
-        console.log(B);
-        console.log(Auuid);
-        console.log(Buuid);
-        console.log(Bo);
-        console.log(diff);
-        console.log("****************************");
+        // console.log("****************************");
+        // console.log(A);
+        // console.log(B);
+        // console.log(Auuid);
+        // console.log(Buuid);
+        // console.log(Bo);
+        // console.log(diff);
+        // console.log("****************************");
 
         this.prop("Messages", A);
-
-        return this;
-    }
-
-    //! Untested
-    TwoWaySyncChannels(channel) {
-        let A = this.prop("Messages"),
-            B = channel.prop("Messages"),
-            Ao = {},
-            Bo = {};
-            
-        for(let msg in A) {
-            Ao[ msg.UUID ] = msg;
-        }
-        for(let msg in B) {
-            Bo[ msg.UUID ] = msg;
-        }
-
-        let Adiff = Ao.filter(x => !Bo.includes(x)),
-            Bdiff = Bo.filter(x => !Ao.includes(x));
-
-        for(let key in Ao) {
-            B.push(Ao[ key ]);
-        }
-        for(let key in Bo) {
-            A.push(Bo[ key ]);
-        }
-
-        this.prop("Messages", A);
-        channel.prop("Messages", B);
 
         return this;
     }
