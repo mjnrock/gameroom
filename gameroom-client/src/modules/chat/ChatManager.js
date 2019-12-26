@@ -1,10 +1,13 @@
+import Lux from "@lespantsfancy/lux";
+
 // import AManager from "./../AManager";
 
 import Channel from "./Channel";
 import Message from "./Message";
 
-class ChatManager {
+class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
     constructor() {
+        super();
     // constructor(parent) {
     //     super(
     //         "chat",
@@ -76,7 +79,7 @@ class ChatManager {
         try {
             this.prop("Room").AddMessage(...arguments);
         } catch (e) {
-            console.log(`[Invalid Message]: Nah.`);
+            console.log(`[Invalid Message]: Nah.`, e);
         }
 
         return this;
