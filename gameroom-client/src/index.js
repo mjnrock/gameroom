@@ -7,7 +7,7 @@ import App from "./App";
 
 import ChatStore from "./stores/ChatStore";
 
-const store = {
+const store = window.store = {
     ChatStore
 };
 

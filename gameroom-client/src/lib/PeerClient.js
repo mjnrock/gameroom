@@ -44,7 +44,8 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
 
         // this.prop("Me", new Peer(this.UUID(), this.Server));
-        this.prop("Me", new Peer(this.UUID(), {
+        // this.prop("Me", new Peer(this.UUID(), {
+        this.prop("Me", new Peer(+Math.floor((Math.random() * 100)), {
             ...this.Server,
             debug: 3
         }));
