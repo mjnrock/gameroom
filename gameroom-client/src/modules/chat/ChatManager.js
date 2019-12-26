@@ -79,7 +79,7 @@ class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
         try {
             this.prop("Room").AddMessage(...arguments);
         } catch (e) {
-            console.log(`[Invalid Message]: Nah.`, e);
+            console.log(`[Invalid Message]: Nah.`);
         }
 
         return this;

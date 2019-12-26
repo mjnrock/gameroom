@@ -18,8 +18,8 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
 
             this.prop("Messages", messages);
         } else if(typeof msg === "object") {
-            if(msg.author && msg.content) {
-                return this.AddMessage(new Message(msg.author, msg.content));
+            if(msg.Author && msg.Content) {
+                return this.AddMessage(new Message(msg.Author, msg.Content));
             }
 
             return false;

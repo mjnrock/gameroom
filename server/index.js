@@ -18,7 +18,7 @@ function GenerateUUID() {
 const App = {
     UUID: GenerateUUID(),
     Server: {
-        Port: 3000,
+        Port: 3001,
         IP: null,
         QRCode: {
             Controller: null,

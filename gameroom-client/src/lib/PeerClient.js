@@ -7,7 +7,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
         this.Server = server || {
             host: "192.168.86.97",
-            port: 3000,
+            port: 3001,
             path: "/peer"
         };
         this.Handlers = {
@@ -54,6 +54,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         });
         this.prop("Me").on("connection", dataConnection => {
             this.call("peer-connection", dataConnection);
+            this.RegisterConnection(dataConnection.peer, dataConnection);
         });
         this.prop("Me").on("call", mediaConnection => {
             this.call("peer-call", mediaConnection);
@@ -94,6 +95,20 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         return this;
     }
 
+    BroadcastConnect(msg) {
+        for(let i in this.prop("Connection")) {
+            let conn = this.prop("Connection")[ i ];
+
+            if(conn.open) {
+                if(typeof msg === "string" || msg instanceof String) {
+                    conn.send(msg);
+                } else {
+                    conn.send(JSON.stringify(msg));
+                }
+            }
+        }
+    }
+
     Connect(peerId) {
         if(!this.HasPeer(peerId)) {
             this.RegisterPeer(peerId);
@@ -101,19 +116,6 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
         let me = this.prop("Me"),
             conn = me.connect(peerId);
-
-        if(typeof this.Handlers.Connect.open === "function") {
-            conn.on("open", this.Handlers.Connect.open.bind(this));
-        }
-        if(typeof this.Handlers.Connect.data === "function") {
-            conn.on("data", this.Handlers.Connect.data.bind(this));
-        }
-        if(typeof this.Handlers.Connect.close === "function") {
-            conn.on("close", this.Handlers.Connect.close.bind(this));
-        }
-        if(typeof this.Handlers.Connect.error === "function") {
-            conn.on("error", this.Handlers.Connect.error.bind(this));
-        }
 
         this.call("connection-open", peerId, conn);
         this.RegisterConnection(peerId, conn);
@@ -157,6 +159,19 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
         conx[ peerId ] = conn;
         this.call("connection-register", peerId, conn);
+
+        if(typeof this.Handlers.Connect.open === "function") {
+            conn.on("open", this.Handlers.Connect.open.bind(this));
+        }
+        if(typeof this.Handlers.Connect.data === "function") {
+            conn.on("data", this.Handlers.Connect.data.bind(this));
+        }
+        if(typeof this.Handlers.Connect.close === "function") {
+            conn.on("close", this.Handlers.Connect.close.bind(this));
+        }
+        if(typeof this.Handlers.Connect.error === "function") {
+            conn.on("error", this.Handlers.Connect.error.bind(this));
+        }
 
         return this.prop("Connection", conx);
     }
