@@ -24,32 +24,7 @@ const App = {
             Controller: null,
             Viewport: null
         }
-    },
-    Loop: null,
-    Clients: {},
-    Size: {
-        Width: 1000,
-        Height: 500
-    },
-
-    Games: {
-        [ GenerateUUID() ]: {
-            Title: "Game 1",
-            Players: [ 2, 4 ],  // [ min, max ]
-            TeamSize: [ 1, 2 ]  // [ min, max ]
-        },
-        [ GenerateUUID() ]: {
-            Title: "Game 2",
-            Players: [ 4, 4 ],  // [ min, max ]
-            TeamSize: [ 2, 2 ]  // [ min, max ]
-        },
-        [ GenerateUUID() ]: {
-            Title: "Game 3",
-            Players: [ 4, 16 ],  // [ min, max ]
-            TeamSize: [ 2, 4 ]  // [ min, max ]
-        }
-    },
-    ActiveGame: {}
+    }
 };
 
 require("dns").lookup(require("os").hostname(), function(err, ip, fam) {
@@ -122,11 +97,11 @@ server.get("/v", (req, res) => {
 const SERVER = server.listen(App.Server.Port);
 
 const peerOptions = {
-    debug: true,
-    ssl: {
-        key: fs.readFileSync("./certificates/key.pem", "utf8"),
-        cert: fs.readFileSync("./certificates/cert.pem", "utf8")
-    }
+    debug: true
+    // ssl: {
+    //     key: fs.readFileSync("./certificates/key.pem", "utf8"),
+    //     cert: fs.readFileSync("./certificates/cert.pem", "utf8")
+    // }
 };
 const PEER_SERVER = ExpressPeerServer(SERVER, peerOptions);
 server.use("/peer", PEER_SERVER);

@@ -1,12 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "mobx-react";
 
-import { Provider } from 'mobx-react';
-import IncomeDomainStore from './incomeDomainStore';
+import "./index.css";
+import App from "./App";
+
+import ChatStore from "./stores/ChatStore";
+
+const store = {
+    ChatStore
+};
+
 ReactDOM.render(
-    <Provider incomeDomainStore={ new IncomeDomainStore() }>
+    <Provider store={ store }>
         <App />
     </Provider>,
-document.getElementById('root'));
+document.getElementById("root"));
