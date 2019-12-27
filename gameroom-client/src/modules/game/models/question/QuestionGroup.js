@@ -46,8 +46,8 @@ export default class QuestionGroup {
 
     /**
      * e.g. [
-            [ 0, 2 ],   // Question index 0, Response index 2
-            [ 1, 2 ],   // Question index 1, Response index 2
+            [ 0, "540b205e-981e-4b16-b3ca-4e8c83b9216a" ],   // Question index 0, Response UUID
+            [ 1, "09dd5ddc-1afb-45cd-8a86-1cd22890de2a" ],   // Question index 1, Response UUID
         ]
      */
     ValidateResponses(responses = []) {

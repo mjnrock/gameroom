@@ -1,5 +1,8 @@
-import QuestionValidatorType from "./QuestionValidatorType";
+
+import QuestionRewardType from "./QuestionRewardType";
+import QuestionValidator from "./QuestionValidator";
 
 export default {
-    QuestionValidatorType
+    QuestionRewardType,
+    QuestionValidator
 };

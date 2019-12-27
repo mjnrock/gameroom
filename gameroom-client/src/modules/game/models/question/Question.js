@@ -1,57 +1,90 @@
 import Lux from "@lespantsfancy/lux";
 
-import QuestionValidatorType from "./enum/QuestionValidatorType";
+import Enum from "./enum/package";
 import QuestionChoice from "./QuestionChoice";
 
 export default class Question {
-    constructor(type, text, choices = [], order = 1) {
+    constructor([ rtype, vtype ], text, choices = [], order = 1) {
         this.UUID = Lux.Core.Helper.GenerateUUID();
 
         this.Text = text;
         this.Choices = [];
         this.Order = order;
 
-        if(typeof type === "function") {
-            this.Validator = type;  // (choice, this)
+        //? This is preemptively here to allow for things like a variable response value [e.g. 1000 * (Time Remaining / Max Time)]
+        //  Round.GetScore knows to use this if the RewardType is set
+        this.Value = null;
+        this.ValueController = null;    // This should be a function
+
+        this.RewardType = rtype;
+        if (typeof vtype === "function") {
+            this.Validator = vtype;  // (choice, this)
+            this.ValidatorType = "CUSTOM";
         } else {
-            this.Validator = QuestionValidatorType.HIGHEST_VALUE;
+            this.Validator = Enum.QuestionValidator[ Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE ];
+            this.ValidatorType = Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE;
         }
 
         this.SetChoices(choices);
     }
 
-    ValidateResponse(choiceIndex, ...args) {
-        if(typeof choice === "string" || choice instanceof String) {
-            //TODO Perform RegEx UUID validation
-            let response = this.Choices.filter(c => c.UUID === choiceIndex);
+    ValidateResponse(choiceUUID, ...args) {
+        if (this.ValidatorType === "CUSTOM") {
+            // return this.Validator(this.Choices[ choiceUUID ], this, ...args);
+        } else if (Object.keys(Enum.QuestionValidator.Type).includes(this.ValidatorType)) {
+            if (typeof choiceUUID === "string" || choiceUUID instanceof String) {
+                //TODO Perform RegEx UUID validation
+                let [ response ] = this.Choices.filter(c => c.UUID === choiceUUID) || [];
 
-            if(response) {
-                return this.Validator(response, this, ...args);
-            } else {
-                throw new Error(`Invalid QuestionChoice UUID`);
+                if (response) {
+                    return this.Validator(response, this, ...args);
+                } else {
+                    throw new Error(`Invalid QuestionChoice UUID`);
+                }
             }
-        } else if(typeof this.Validator === "function") {
-            return this.Validator(this.Choices[ choiceIndex ], this, ...args);
         } else {
             throw new Error(`Validator is not a function!`);
         }
     }
 
-    SetChoices(choices) {
-        for(let i in choices) {
-            let choice = choices[ i ];
+    GetChoice(uuid, valueOnly = false) {
+        let choice = this.Choices.filter(c => c.UUID === uuid);
 
-            if(choice instanceof QuestionChoice) {
+        if(choice.length) {
+            if(valueOnly) {
+                return choice[ 0 ].Value;
+            }
+
+            return choice[ 0 ];
+        }
+
+        return false;
+    }
+
+    SetChoices(choices) {
+        for (let i in choices) {
+            let choice = choices[i];
+
+            if (choice instanceof QuestionChoice) {
                 this.Choices.push(choice);
-            } else if(Array.isArray(choice)) {
+            } else if (Array.isArray(choice)) {
                 this.Choices.push(new QuestionChoice(...choice));
             }
         }
     }
 
     Sort(fn = null) {
-        if(typeof fn === "function") {
+        let randomizer = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        };
+
+        if (typeof fn === "function") {
             this.Choices.sort(fn);
+        } else if (fn === -1) {
+            randomizer(this.Choices);
         } else {
             this.Choices.sort((a, b) => a.Order - b.Order);
         }
