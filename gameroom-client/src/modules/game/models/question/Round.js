@@ -61,3 +61,78 @@ export default class Round {
         return scores;
     }
 }
+
+
+
+//* Testing Example
+// this.QuestionGroup = new Game.Model.Question.QuestionGroup();
+// this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
+//     [
+//         Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
+//         Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
+//     ],
+//     "Lorem ipsum dolor sit amet.",
+//     [
+//         new Game.Model.Question.QuestionChoice("Choice A", 5),
+//         new Game.Model.Question.QuestionChoice("Choice B", 0),
+//         new Game.Model.Question.QuestionChoice("Choice C", 0),
+//         new Game.Model.Question.QuestionChoice("Choice D", 1)
+//     ]
+// ));
+// this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
+//     [
+//         Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
+//         Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
+//     ],
+//     "Consequatur nostrum voluptates itaque quod omnis explicabo ducimus, voluptatem quam! Repellat, illo?",
+//     [
+//         new Game.Model.Question.QuestionChoice("Choice A", 0),
+//         new Game.Model.Question.QuestionChoice("Choice B", 0),
+//         new Game.Model.Question.QuestionChoice("Choice C", 0),
+//         new Game.Model.Question.QuestionChoice("Choice D", 1)
+//     ]
+// ));
+// this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
+//     [
+//         Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
+//         Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
+//     ],
+//     "This is a different sample question",
+//     [
+//         new Game.Model.Question.QuestionChoice("Choice A", 0),
+//         new Game.Model.Question.QuestionChoice("Choice B", 0),
+//         new Game.Model.Question.QuestionChoice("Choice C", 0),
+//         new Game.Model.Question.QuestionChoice("Choice D", 2)
+//     ]
+// ));
+
+
+// this.Round = new Game.Model.Question.Round(this.QuestionGroup);
+
+// //  Question 1 (i = 0)
+// this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 0 ].UUID);
+// this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 1 ].UUID);
+// this.Round.NextQuestion();
+
+// //  Question 2 (i = 1)
+// this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 1 ].Choices[ 2 ].UUID);
+// this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 1 ].Choices[ 3 ].UUID);
+// this.Round.NextQuestion();
+
+// //  Question 3 (i = 2)
+// this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 2 ].Choices[ 3 ].UUID);
+// this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 2 ].Choices[ 2 ].UUID);
+
+// console.log(this.Round);
+// console.log(this.Round.GetScores([
+//     "Matt",
+//     "Sarah"
+// ]));
+
+
+// let testIndex = 0;
+// console.log(this.QuestionGroup.ValidateResponses([
+//     [ testIndex, this.Round.QuestionGroup.Questions[ testIndex ].Choices[ 3 ].UUID ],
+//     [ testIndex + 1, this.Round.QuestionGroup.Questions[ testIndex + 1 ].Choices[ 3 ].UUID ],
+//     [ testIndex + 2, this.Round.QuestionGroup.Questions[ testIndex + 2 ].Choices[ 2 ].UUID ],
+// ]));
