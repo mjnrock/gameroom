@@ -4,7 +4,11 @@ import Enum from "./enum/package";
 import QuestionChoice from "./QuestionChoice";
 
 export default class Question {
-    constructor([ rtype, vtype ], text, choices = [], order = 1) {
+    constructor([ rtype, vtype ], text, choices = [], {
+        value = null,
+        valueController = null,
+        order = 1
+    } = {}) {
         this.UUID = Lux.Core.Helper.GenerateUUID();
 
         this.Text = text;
@@ -13,19 +17,23 @@ export default class Question {
 
         //? This is preemptively here to allow for things like a variable response value [e.g. 1000 * (Time Remaining / Max Time)]
         //  Round.GetScore knows to use this if the RewardType is set
-        this.Value = null;
-        this.ValueController = null;    // This should be a function
+        this.Value = value;
+        this.ValueController = valueController;    // This should be a function
 
         this.RewardType = rtype;
         if (typeof vtype === "function") {
             this.Validator = vtype;  // (choice, this)
             this.ValidatorType = "CUSTOM";
         } else {
-            this.Validator = Enum.QuestionValidator[ Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE ];
-            this.ValidatorType = Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE;
+            this.Validator = Enum.QuestionValidator[ vtype ];
+            this.ValidatorType = vtype;
         }
 
         this.SetChoices(choices);
+
+        if(value === null && this.RewardType === Enum.QuestionRewardType.QUESTION_VALUE) {
+            throw new Error("Question.Value IS NULL && this.RewardType === Enum.QuestionRewardType.QUESTION_VALUE");
+        }
     }
 
     ValidateResponse(choiceUUID, ...args) {
@@ -37,6 +45,7 @@ export default class Question {
                 let [ response ] = this.Choices.filter(c => c.UUID === choiceUUID) || [];
 
                 if (response) {
+                    console.log(response)
                     return this.Validator(response, this, ...args);
                 } else {
                     throw new Error(`Invalid QuestionChoice UUID`);

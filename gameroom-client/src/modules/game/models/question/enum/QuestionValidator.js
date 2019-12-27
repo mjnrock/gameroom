@@ -8,6 +8,7 @@ const QuestionValidator = {
     },
 
     VALUE_IS_ZERO: (choice, question) => {
+        console.log(choice)
         if(+choice.Value === 0) {
             return true;
         }

@@ -23,16 +23,19 @@ class App extends Component {
         this.QuestionGroup = new Game.Model.Question.QuestionGroup();
         this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
             [
-                Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
+                Game.Model.Question.Enum.QuestionRewardType.QUESTION_VALUE,
                 Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
             ],
             "Lorem ipsum dolor sit amet.",
             [
-                new Game.Model.Question.QuestionChoice("Choice A", 5),
+                new Game.Model.Question.QuestionChoice("Choice A", 0),
                 new Game.Model.Question.QuestionChoice("Choice B", 0),
                 new Game.Model.Question.QuestionChoice("Choice C", 0),
                 new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ]
+            ],
+            {
+                value: 50
+            }
         ));
         this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
             [
@@ -57,7 +60,7 @@ class App extends Component {
                 new Game.Model.Question.QuestionChoice("Choice A", 0),
                 new Game.Model.Question.QuestionChoice("Choice B", 0),
                 new Game.Model.Question.QuestionChoice("Choice C", 0),
-                new Game.Model.Question.QuestionChoice("Choice D", 2)
+                new Game.Model.Question.QuestionChoice("Choice D", 1)
             ]
         ));
 
@@ -82,14 +85,6 @@ class App extends Component {
         console.log(this.Round.GetScores([
             "Matt",
             "Sarah"
-        ]));
-        
-        
-        let testIndex = 0;
-        console.log(this.QuestionGroup.ValidateResponses([
-            [ testIndex, this.Round.QuestionGroup.Questions[ testIndex ].Choices[ 3 ].UUID ],
-            [ testIndex + 1, this.Round.QuestionGroup.Questions[ testIndex + 1 ].Choices[ 3 ].UUID ],
-            [ testIndex + 2, this.Round.QuestionGroup.Questions[ testIndex + 2 ].Choices[ 2 ].UUID ],
         ]));
     }
 
