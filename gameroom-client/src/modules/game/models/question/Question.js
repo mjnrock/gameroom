@@ -4,8 +4,10 @@ import Enum from "./enum/package";
 import QuestionChoice from "./QuestionChoice";
 
 export default class Question {
-    constructor([ rtype, vtype ], text, choices = [], {
-        value = null,
+    constructor(text, choices = [], {
+        rtype = Enum.QuestionRewardType.QUESTION_VALUE,
+        vtype = Enum.QuestionValidator.Type.VALUE_IS_ONE,
+        value = 1,
         valueController = null,
         order = 1
     } = {}) {

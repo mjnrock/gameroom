@@ -22,11 +22,16 @@ class App extends Component {
 
         this.QuestionGroup = new Game.Model.Question.QuestionGroup();
         this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            [
-                Game.Model.Question.Enum.QuestionRewardType.QUESTION_VALUE,
-                Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
-            ],
             "Lorem ipsum dolor sit amet.",
+            [
+                new Game.Model.Question.QuestionChoice("Choice A", 0),
+                new Game.Model.Question.QuestionChoice("Choice B", 0),
+                new Game.Model.Question.QuestionChoice("Choice C", 0),
+                new Game.Model.Question.QuestionChoice("Choice D", 1)
+            ]
+        ));
+        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
+            "Consequatur nostrum voluptates itaque quod omnis explicabo ducimus, voluptatem quam! Repellat, illo?",
             [
                 new Game.Model.Question.QuestionChoice("Choice A", 0),
                 new Game.Model.Question.QuestionChoice("Choice B", 0),
@@ -34,42 +39,29 @@ class App extends Component {
                 new Game.Model.Question.QuestionChoice("Choice D", 1)
             ],
             {
-                value: 50
+                vtype: Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE
             }
         ));
         this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            [
-                Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
-                Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
-            ],
-            "Consequatur nostrum voluptates itaque quod omnis explicabo ducimus, voluptatem quam! Repellat, illo?",
-            [
-                new Game.Model.Question.QuestionChoice("Choice A", 0),
-                new Game.Model.Question.QuestionChoice("Choice B", 0),
-                new Game.Model.Question.QuestionChoice("Choice C", 0),
-                new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ]
-        ));
-        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            [
-                Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
-                Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE,
-            ],
             "This is a different sample question",
             [
                 new Game.Model.Question.QuestionChoice("Choice A", 0),
                 new Game.Model.Question.QuestionChoice("Choice B", 0),
                 new Game.Model.Question.QuestionChoice("Choice C", 0),
                 new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ]
+            ],
+            {
+                rtype: Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
+                vtype: Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE
+            }
         ));
 
 
         this.Round = new Game.Model.Question.Round(this.QuestionGroup);
         
         //  Question 1 (i = 0)
-        this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 0 ].UUID);
-        this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 1 ].UUID);
+        this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 1 ].UUID);
+        this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 3 ].UUID);
         this.Round.NextQuestion();
 
         //  Question 2 (i = 1)
