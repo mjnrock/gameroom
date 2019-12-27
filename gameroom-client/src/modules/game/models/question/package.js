@@ -1,12 +1,12 @@
-import EnumQuestionType from "./EnumQuestionType";
+import Enum from "./enum/package";
 
 import QuestionChoice from "./QuestionChoice";
 import Question from "./Question";
 import QuestionGroup from "./QuestionGroup"
 
 export default {
-    EnumQuestionType,
-    
+    Enum,
+
     QuestionChoice,
     Question,
     QuestionGroup

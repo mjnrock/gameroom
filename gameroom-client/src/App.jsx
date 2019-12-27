@@ -22,7 +22,7 @@ class App extends Component {
 
         this.QuestionGroup = new Game.Model.Question.QuestionGroup();
         this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            Game.Model.Question.EnumQuestionType.HIGHEST_VALUE,
+            Game.Model.Question.Enum.QuestionValidatorType.HIGHEST_VALUE,
             "This is a sample question",
             [
                 new Game.Model.Question.QuestionChoice("Choice 5", 5),
@@ -32,7 +32,7 @@ class App extends Component {
             ]
         ));
 
-        console.log(Game.Model.Question.EnumQuestionType)
+        console.log(Game.Model.Question.Enum.QuestionValidatorType)
         console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(0));
         console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(1));
         console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(2));

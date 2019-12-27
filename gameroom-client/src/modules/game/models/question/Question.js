@@ -1,6 +1,6 @@
 import Lux from "@lespantsfancy/lux";
 
-import EnumQuestionType from "./EnumQuestionType";
+import QuestionValidatorType from "./enum/QuestionValidatorType";
 import QuestionChoice from "./QuestionChoice";
 
 export default class Question {
@@ -14,15 +14,15 @@ export default class Question {
         if(typeof type === "function") {
             this.Validator = type;  // (choice, this)
         } else {
-            this.Validator = EnumQuestionType.HIGHEST_VALUE;
+            this.Validator = QuestionValidatorType.HIGHEST_VALUE;
         }
 
         this.SetChoices(choices);
     }
 
-    ValidateResponse(choiceIndex) {
+    ValidateResponse(choiceIndex, ...args) {
         if(typeof this.Validator === "function") {
-            return this.Validator(this.Choices[ choiceIndex ], this);
+            return this.Validator(this.Choices[ choiceIndex ], this, ...args);
         } else {
             throw new Error(`Validator is not a function!`);
         }
