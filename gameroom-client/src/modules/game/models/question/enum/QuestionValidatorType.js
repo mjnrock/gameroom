@@ -9,10 +9,10 @@ const QuestionValidatorType = {
         });
 
         if(+choice.Value === max) {
-            return true;
+            return [ true, +c.Value, max ];
         }
 
-        return false;
+        return [ false, +c.Value, max ];
     },
     LOWEST_VALUE: (choice, question) => {
         let min = Number.MAX_SAFE_INTEGER;
@@ -24,17 +24,17 @@ const QuestionValidatorType = {
         });
 
         if(+choice.Value === min) {
-            return true;
+            return [ true, +c.Value, min ];
         }
 
-        return false;
+        return [ false, +c.Value, min ];
     },
     SPECIFIC_VALUE: (choice, question, value) => {
         if(+choice.Value === value) {
-            return true;
+            return [ true, +c.Value, value ];
         }
 
-        return false;
+        return [ false, +c.Value, value ];
     }
 };
 

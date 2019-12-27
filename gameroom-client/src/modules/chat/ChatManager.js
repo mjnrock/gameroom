@@ -1,32 +1,21 @@
 import Lux from "@lespantsfancy/lux";
 
-// import AManager from "./../AManager";
-
 import Channel from "./Channel";
 import Message from "./Message";
 
 class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
     constructor() {
         super();
-    // constructor(parent) {
-    //     super(
-    //         "chat",
-    //         "Chat",
-    //         parent
-    //     );
 
         this.prop("Room", new Channel("Room"));
         this.prop("Team", {});
-        // this.prop("Player", {});
 
         this.on("channel-message");
         
-        // this.MassSubcribeParent([
-        //     "channel-message"   //  => [ this, last message, channel ]
-        // ]);
         this.InitializeRoom();
     }
 
+    //  Puts a data watcher on the "Room" channel
     InitializeRoom() {
         let Room = this.prop("Room"),
             uuid = Room.watch("Messages", (prop, data, _this) => {
@@ -68,12 +57,6 @@ class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
     RemoveTeamChannel(uuid, team) {
         return this.DestroyChannel(uuid, "Team", team);
     }
-    // AddPlayerChannel(player) {
-    //     return this.CreateChannel("Player", player);
-    // }
-    // RemovePlayerChannel(player) {
-    //     return this.DestroyChannel(uuid, "Player", player);
-    // }
 
     SendRoom() {
         try {
@@ -93,15 +76,6 @@ class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
 
         return this;
     }
-    // SendPlayer(player, ...msg) {
-    //     try {
-    //         this.prop("Player")[ player ].AddMessage(...msg);
-    //     } catch (e) {
-    //         console.log(`[Invalid Player]: "${ player }" does not exist.`);
-    //     }
-
-    //     return this;
-    // }
 }
 
 export default ChatManager;

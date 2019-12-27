@@ -6,6 +6,34 @@ export default class QuestionGroup {
         this.UUID = Lux.Core.Helper.GenerateUUID();
         
         this.Questions = questions;
+        this.Index = 0;
+    }
+
+    Get(index) {
+        return this.Questions[ index ];
+    }
+
+    IsAtStart() {
+        return this.Index === 0;
+    }
+    IsAtEnd() {
+        return this.Index === this.Questions.length - 1;
+    }
+    
+    Current() {
+        return this.Questions[ this.Index ];
+    }
+
+    GoTo(index) {
+        this.Index = Lux.Core.Helper.Clamp(index, 0, this.Questions.length - 1);
+
+        return this.Questions[ this.Index ];
+    }
+    Next() {
+        return this.GoTo(this.Index + 1);
+    }
+    Previous() {
+        return this.GoTo(this.Index - 1);
     }
 
     AddQuestion(question) {

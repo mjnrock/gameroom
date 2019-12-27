@@ -21,7 +21,16 @@ export default class Question {
     }
 
     ValidateResponse(choiceIndex, ...args) {
-        if(typeof this.Validator === "function") {
+        if(typeof choice === "string" || choice instanceof String) {
+            //TODO Perform RegEx UUID validation
+            let response = this.Choices.filter(c => c.UUID === choiceIndex);
+
+            if(response) {
+                return this.Validator(response, this, ...args);
+            } else {
+                throw new Error(`Invalid QuestionChoice UUID`);
+            }
+        } else if(typeof this.Validator === "function") {
             return this.Validator(this.Choices[ choiceIndex ], this, ...args);
         } else {
             throw new Error(`Validator is not a function!`);
