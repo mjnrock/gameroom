@@ -98,6 +98,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         return this;
     }
 
+
     Register(peerId, conn = null) {
         this.RegisterPeer(peerId);
         this.RegisterConnection(peerId, conn);
@@ -110,6 +111,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
         return this;
     }
+
 
     HasPeer(peerId) {
         return this.prop("Peers").includes(peerId);
@@ -127,14 +129,15 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         return this;
     }
 
+
     HasConnection(peerId) {
         return Object.keys(this.prop("Connections")).includes(peerId);
     }
     RegisterConnection(peerId, conn) {
         if(!this.HasConnection(peerId)) {
-            conn.on("data", this.ReceiveJSON.bind(this));
-
-            console.log(conn)
+            if(conn.serialization === "json") {
+                conn.on("data", this.ReceiveJSON.bind(this));
+            }
 
             this.prop("Connections")[ peerId ] = conn;
         }
