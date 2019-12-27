@@ -14,7 +14,7 @@ class App extends Component {
         this.inpChatMessage = React.createRef();
 
         this.PeerClient = new PeerClient();
-        this.PeerClient.listen("data-message", ([ target, message ]) => {
+        this.PeerClient.listen("json-message", ([ target, message ]) => {
             this.RouteMessage(message);
         })
     }
@@ -45,7 +45,7 @@ class App extends Component {
             let message = new Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
 
             ChatManager.SendRoom(message);  // Load into local message queue
-            this.PeerClient.DataBroadcast({                      // Send to peer message queue
+            this.PeerClient.BroadcastJSON({                      // Send to peer message queue
                 Type: "ChatMessage",
                 Channel: "Room",
                 // Message: new Message(this.PeerClient.UUID(), message)

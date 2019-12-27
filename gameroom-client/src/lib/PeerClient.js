@@ -29,10 +29,10 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         this.prop("Peers", []);
         this.prop("Connections", {});
 
-        this.on("data-message");
+        this.on("json-message");
     }
 
-    DataReceive(json) {
+    ReceiveJSON(json) {
         try {
             let obj = json;
     
@@ -40,14 +40,14 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
                 obj = JSON.parse(json);
             }
     
-            this.call("data-message", obj);
+            this.call("json-message", obj);
         } catch(e) {
             console.log("Could not parse message");
         }
 
         return this;
     }
-    DataSend(peerId, msg) {
+    SendJSON(peerId, msg) {
         if(this.HasConnection(peerId)) {
             let conn = this.prop("Connections")[ peerId ];
 
@@ -60,17 +60,20 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
         return this;
     }
-    DataBroadcast(msg) {
+    BroadcastJSON(msg) {
         for(let uuid in this.prop("Connections")) {
-            this.DataSend(uuid, msg);
+            this.SendJSON(uuid, msg);
         }
 
         return this;
     }
+
     
-    Connect(peerId) {
+    Connect(peerId, serialization = "json") {
         try {
-            let conn = this.Connector.connect(peerId);
+            let conn = this.Connector.connect(peerId, {
+                serialization
+            });
     
             this.Register(peerId, conn);
         } catch(e) {
@@ -129,7 +132,9 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
     }
     RegisterConnection(peerId, conn) {
         if(!this.HasConnection(peerId)) {
-            conn.on("data", this.DataReceive.bind(this));
+            conn.on("data", this.ReceiveJSON.bind(this));
+
+            console.log(conn)
 
             this.prop("Connections")[ peerId ] = conn;
         }
