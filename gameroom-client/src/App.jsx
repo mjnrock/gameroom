@@ -28,7 +28,10 @@ class App extends Component {
                 new Game.Model.Question.QuestionChoice("Choice B", 0),
                 new Game.Model.Question.QuestionChoice("Choice C", 0),
                 new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ]
+            ],
+            {
+                value: 5
+            }
         ));
         this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
             "Consequatur nostrum voluptates itaque quod omnis explicabo ducimus, voluptatem quam! Repellat, illo?",
