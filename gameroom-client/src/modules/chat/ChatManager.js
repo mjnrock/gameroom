@@ -1,11 +1,12 @@
-import Lux from "@lespantsfancy/lux";
+import AManager from "./../AManager";
 
 import Channel from "./Channel";
-import Message from "./Message";
 
-class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
+class ChatManager extends AManager {
     constructor() {
-        super();
+        super(
+            "chat"
+        );
 
         this.prop("Room", new Channel("Room"));
         this.prop("Team", {});

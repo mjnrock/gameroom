@@ -1,14 +1,15 @@
 import Handler from "./../../Handler";
 
 export default class TriviaHandler extends Handler {
-    constructor() {
+    constructor(ref) {
         super(
-            ref,
-            this.ReceiveMessage
+            ref
         );
     }
 
     ReceiveMessage(msg, type = "json") {
+        console.log("----------- TRIVIA HANDLER -----------");
         console.log(msg);
+        console.log("--------- END TRIVIA HANDLER ---------");
     }
 }

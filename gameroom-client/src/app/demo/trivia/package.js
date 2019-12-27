@@ -1,9 +1,9 @@
 import TriviaHandler from "./TriviaHandler";
 
-import Main from "./index";
+import App from "./App";
 
 export default {
     TriviaHandler,
 
-    Main
+    App
 };

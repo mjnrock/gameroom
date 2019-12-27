@@ -4,7 +4,7 @@ import { observer, inject } from "mobx-react";
 import PeerClient from "./lib/PeerClient";
 import Message from "./modules/chat/Message";
 
-import Game from "./modules/game/package";
+import Demo from "./app/demo/package";
 
 @inject("store")
 @observer
@@ -20,67 +20,14 @@ class App extends Component {
             this.RouteMessage(message);
         });
 
-        this.QuestionGroup = new Game.Model.Question.QuestionGroup();
-        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            "Lorem ipsum dolor sit amet.",
-            [
-                new Game.Model.Question.QuestionChoice("Choice A", 0),
-                new Game.Model.Question.QuestionChoice("Choice B", 0),
-                new Game.Model.Question.QuestionChoice("Choice C", 0),
-                new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ],
-            {
-                value: 5
-            }
-        ));
-        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            "Consequatur nostrum voluptates itaque quod omnis explicabo ducimus, voluptatem quam! Repellat, illo?",
-            [
-                new Game.Model.Question.QuestionChoice("Choice A", 0),
-                new Game.Model.Question.QuestionChoice("Choice B", 0),
-                new Game.Model.Question.QuestionChoice("Choice C", 0),
-                new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ],
-            {
-                vtype: Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE
-            }
-        ));
-        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
-            "This is a different sample question",
-            [
-                new Game.Model.Question.QuestionChoice("Choice A", 0),
-                new Game.Model.Question.QuestionChoice("Choice B", 0),
-                new Game.Model.Question.QuestionChoice("Choice C", 0),
-                new Game.Model.Question.QuestionChoice("Choice D", 1)
-            ],
-            {
-                rtype: Game.Model.Question.Enum.QuestionRewardType.RESPONSE_VALUE,
-                vtype: Game.Model.Question.Enum.QuestionValidator.Type.MAX_RESPONSE_VALUE
-            }
-        ));
-
-
-        this.Round = new Game.Model.Question.Round(this.QuestionGroup);
+        //  ------- DEMO -------
+        let Trivia = new Demo.Trivia.App();
+        console.log(Trivia);
         
-        //  Question 1 (i = 0)
-        this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 1 ].UUID);
-        this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 0 ].Choices[ 3 ].UUID);
-        this.Round.NextQuestion();
-
-        //  Question 2 (i = 1)
-        this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 1 ].Choices[ 2 ].UUID);
-        this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 1 ].Choices[ 3 ].UUID);
-        this.Round.NextQuestion();
-
-        //  Question 3 (i = 2)
-        this.Round.AddResponse("Matt", this.Round.QuestionGroup.Questions[ 2 ].Choices[ 3 ].UUID);
-        this.Round.AddResponse("Sarah", this.Round.QuestionGroup.Questions[ 2 ].Choices[ 2 ].UUID);
-        
-        console.log(this.Round);
-        console.log(this.Round.GetScores([
-            "Matt",
-            "Sarah"
-        ]));
+        this.PeerClient.listen("json-message", ([ target, message ]) => {
+            Trivia.Handler.ReceiveMessage(message);
+        });
+        //  ----- END DEMO -----
     }
 
 

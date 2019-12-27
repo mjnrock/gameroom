@@ -24,7 +24,7 @@ export default class Registry extends Lux.Core.ClassDecorators.StateEvents {
     }
 
     Register(module) {
-        this.Modules[ module.prop("Code") ] = module;
+        this.Modules[ module.prop("Name") ] = module;
 
         return this;
     }
@@ -32,7 +32,7 @@ export default class Registry extends Lux.Core.ClassDecorators.StateEvents {
         if(typeof module === "string" || module instanceof String) {
             delete this.Modules[ module ];
         } else {
-            delete this.Modules[ module.prop("Code") ];
+            delete this.Modules[ module.prop("Name") ];
         }
 
         return this;

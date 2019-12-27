@@ -1,11 +1,21 @@
 import Lux from "@lespantsfancy/lux";
 
 export default class Handler extends Lux.Core.ClassDecorators.StateEvents {
-    constructor(ref, receiver) {
+    constructor(ref) {
         super();
 
         this.Controller = ref; // ref to App, Module, etc.
-        this.Receiver = receiver;
+    }
+
+    AttachController(ref) {
+        this.Controller = ref;
+
+        return this;
+    }
+    DetachController() {
+        this.Controller = null;
+
+        return this;
     }
 
     async SubRoute(code, msg, type = "json") {
@@ -26,6 +36,6 @@ export default class Handler extends Lux.Core.ClassDecorators.StateEvents {
      * @param {string} type The expected type of @msg (e.g. JSON, Binary, etc.)
      */
     ReceiveMessage(msg, type = "json") {
-        return this.Receiver(msg, type);
+        //TODO Route the message
     }
 };
