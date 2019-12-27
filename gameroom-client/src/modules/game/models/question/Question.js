@@ -39,4 +39,14 @@ export default class Question {
             }
         }
     }
+
+    Sort(fn = null) {
+        if(typeof fn === "function") {
+            this.Choices.sort(fn);
+        } else {
+            this.Choices.sort((a, b) => a.Order - b.Order);
+        }
+
+        return this;
+    }
 }

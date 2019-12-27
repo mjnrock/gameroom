@@ -25,18 +25,31 @@ class App extends Component {
             Game.Model.Question.Enum.QuestionValidatorType.HIGHEST_VALUE,
             "This is a sample question",
             [
-                new Game.Model.Question.QuestionChoice("Choice 5", 5),
+                new Game.Model.Question.QuestionChoice("Choice 5", 5,),
                 new Game.Model.Question.QuestionChoice("Choice 10", 10),
                 new Game.Model.Question.QuestionChoice("Choice 15", 15),
                 new Game.Model.Question.QuestionChoice("Choice 3", 3)
             ]
         ));
+        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
+            Game.Model.Question.Enum.QuestionValidatorType.LOWEST_VALUE,
+            "This is a different sample question",
+            [
+                new Game.Model.Question.QuestionChoice("Choice 35", 35,),
+                new Game.Model.Question.QuestionChoice("Choice 30", 30),
+                new Game.Model.Question.QuestionChoice("Choice 38", 38),
+                new Game.Model.Question.QuestionChoice("Choice 33", 33)
+            ]
+        ));
 
-        console.log(Game.Model.Question.Enum.QuestionValidatorType)
-        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(0));
-        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(1));
-        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(2));
-        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(3));
+        console.log(this.QuestionGroup.ValidateResponses([
+            [ 0, 1 ],
+            [ 1, 1 ],
+        ]));
+        console.log(this.QuestionGroup.ValidateResponses([
+            [ 0, 2 ],
+            [ 1, 2 ],
+        ]));
     }
 
 
