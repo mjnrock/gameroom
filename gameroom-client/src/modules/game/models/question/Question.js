@@ -74,12 +74,22 @@ export default class Question {
 
     SetChoices(choices) {
         for (let i in choices) {
-            let choice = choices[i];
+            let choice = choices[ i ];
 
             if (choice instanceof QuestionChoice) {
+                if(+i > 0 && choice.Order === 1) {
+                    choice.Order = +i + 1;
+                }
+
                 this.Choices.push(choice);
             } else if (Array.isArray(choice)) {
-                this.Choices.push(new QuestionChoice(...choice));
+                let qc = new QuestionChoice(...choice);
+                
+                if(+i > 0 && qc.Order === 1) {
+                    qc.Order = +i + 1;
+                }
+
+                this.Choices.push(qc);
             }
         }
     }
