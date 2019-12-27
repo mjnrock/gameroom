@@ -4,6 +4,8 @@ import { observer, inject } from "mobx-react";
 import PeerClient from "./lib/PeerClient";
 import Message from "./modules/chat/Message";
 
+import Game from "./modules/game/package";
+
 @inject("store")
 @observer
 class App extends Component {
@@ -16,7 +18,25 @@ class App extends Component {
         this.PeerClient = new PeerClient();
         this.PeerClient.listen("json-message", ([ target, message ]) => {
             this.RouteMessage(message);
-        })
+        });
+
+        this.QuestionGroup = new Game.Model.Question.QuestionGroup();
+        this.QuestionGroup.AddQuestion(new Game.Model.Question.Question(
+            Game.Model.Question.EnumQuestionType.HIGHEST_VALUE,
+            "This is a sample question",
+            [
+                new Game.Model.Question.QuestionChoice("Choice 5", 5),
+                new Game.Model.Question.QuestionChoice("Choice 10", 10),
+                new Game.Model.Question.QuestionChoice("Choice 15", 15),
+                new Game.Model.Question.QuestionChoice("Choice 3", 3)
+            ]
+        ));
+
+        console.log(Game.Model.Question.EnumQuestionType)
+        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(0));
+        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(1));
+        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(2));
+        console.log(this.QuestionGroup.Questions[ 0 ].ValidateResponse(3));
     }
 
 
