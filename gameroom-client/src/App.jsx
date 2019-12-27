@@ -12,33 +12,20 @@ class App extends Component {
 
         this.inpConnectPeer = React.createRef();
         this.inpChatMessage = React.createRef();
+
         this.PeerClient = new PeerClient();
-        this.PeerClient.Handlers.Connect.data = data => {
-            try {
-                const ChatManager = this.props.store.ChatStore.Manager;
+        this.PeerClient.listen("data-message", ([ target, message ]) => {
+            this.RouteMessage(message);
+        })
+    }
 
-                let obj = JSON.parse(data);
 
-                if(obj.Type === "ChatMessage") {
-                    ChatManager.SendRoom(obj.Message);
-                } else if(obj.Type === "ChannelSync") {
-                    ChatManager.prop("Room").SyncChannel(obj.Messages);
-                }
-            } catch(e) {
-                console.log("Error parsing JSON from Peer data");
-            }
-        };
-
-        //TODO Something about this implementation doesn't feel right, but at a basic level it seems to work
-        this.PeerClient.Handlers.Connect.open = () => {
+    RouteMessage(msg) {
+        if(msg.Type === "ChatMessage") {
             const ChatManager = this.props.store.ChatStore.Manager;
 
-            this.PeerClient.BroadcastConnect({                      // Send to peer message queue
-                Type: "ChannelSync",
-                Channel: "Room",
-                Messages: ChatManager.prop("Room").prop("Messages")
-            });
-        };
+            ChatManager.SendRoom(msg.Message);
+        }
     }
     
     OnConnectPeer(e) {
@@ -55,11 +42,10 @@ class App extends Component {
         const ChatManager = this.props.store.ChatStore.Manager;
 
         if(e.which === 13) {
-            let message = new Message(this.PeerClient.prop("Me")._id, this.inpChatMessage.current.value);
+            let message = new Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
 
-            // ChatManager.SendRoom(this.PeerClient.UUID(), message);  // Load into local message queue
             ChatManager.SendRoom(message);  // Load into local message queue
-            this.PeerClient.BroadcastConnect({                      // Send to peer message queue
+            this.PeerClient.DataBroadcast({                      // Send to peer message queue
                 Type: "ChatMessage",
                 Channel: "Room",
                 // Message: new Message(this.PeerClient.UUID(), message)
@@ -76,7 +62,7 @@ class App extends Component {
         return (
             <div>
                 <div className="container">
-                    <h3>{ this.PeerClient.prop("Me")._id }</h3>
+                    <h3>{ this.PeerClient.prop("ID") }</h3>
                     {/* <h3>{ this.PeerClient.UUID() }</h3> */}
 
                     <input
@@ -97,7 +83,7 @@ class App extends Component {
                         {
                             ChatStore.Room.Messages.map((msg, i) => (
                                 <li className={ `list-group-item pa0 bn` } key={ i }>
-                                    <div className={ `mb1 alert ${ msg.Author === this.PeerClient.prop("Me")._id ? "alert-primary" : "alert-secondary" }` }>
+                                    <div className={ `mb1 alert ${ msg.Author === this.PeerClient.prop("ID") ? "alert-primary" : "alert-secondary" }` }>
                                         <span className="b">[{ msg.Author }]:&nbsp;</span>
                                         <span>{ msg.Content }</span>
                                     </div>

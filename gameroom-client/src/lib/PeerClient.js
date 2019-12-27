@@ -5,187 +5,141 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
     constructor(server = null) {
         super();
 
-        this.Server = server || {
+        // this.prop("ID", Lux.Core.Helper.GenerateUUID());
+        this.prop("ID", +(Math.floor(Math.random() * 100)));
+
+        this.Config = server || {
             host: "192.168.86.97",
             port: 3001,
             path: "/peer"
         };
-        this.Handlers = {
-            Connect: {
-                open: null,
-                data: null,
-                close: null,
-                error: null
-            },
-            Call: {
-                stream: null,
-                close: null,
-                error: null
-            }
-        };
-
-        this.prop("Connection", {});
-        this.prop("Peer", []);
-
-        this.on("handler-register");
-        this.on("handler-unregister");
-        this.on("peer-open");
-        this.on("peer-connection");
-        this.on("peer-call");
-        this.on("peer-close");
-        this.on("peer-disconnected");
-        this.on("peer-error");
-        this.on("peer-register");
-        this.on("peer-unregister");
-        this.on("connection-register");
-        this.on("connection-unregister");
-        this.on("connection-open");
-        this.on("connection-close");
-
-
-        // this.prop("Me", new Peer(this.UUID(), this.Server));
-        // this.prop("Me", new Peer(this.UUID(), {
-        this.prop("Me", new Peer(+Math.floor((Math.random() * 100)), {
-            ...this.Server,
+        this.Connector = new Peer(this.prop("ID"), {
+            ...this.Config,
             debug: 3
-        }));
+        });
 
-        this.prop("Me").on("open", peerId => {
-            this.call("peer-open", peerId);
+        this.Connector.on("connection", dataConn => {
+            this.Register(dataConn.peer, dataConn);
         });
-        this.prop("Me").on("connection", dataConnection => {
-            this.call("peer-connection", dataConnection);
-            this.RegisterConnection(dataConnection.peer, dataConnection);
-        });
-        this.prop("Me").on("call", mediaConnection => {
-            this.call("peer-call", mediaConnection);
-        });
-        this.prop("Me").on("close", () => {
-            //TODO Get closed ID ?
-            this.call("peer-close");
-        });
-        this.prop("Me").on("disconnected", () => {
-            //TODO Get disconnected ID ?
-            this.call("peer-disconnected");
-        });
-        this.prop("Me").on("error", error => {
-            this.call("peer-error", error);
-        });
+        // this.Connector.on("disconnected", dataConn => {
+        //    // TODO Get disconnected ID ?
+        //     this.Unregister(dataConn._id);
+        // });
+
+        this.prop("Peers", []);
+        this.prop("Connections", {});
+
+        this.on("data-message");
     }
 
-    SeedHandler(fn) {
-        if(typeof fn === "function") {
-            fn(this.Handlers, this);
-        }
-
-        return this;
-    }
-
-    RegisterHandler(event, fn, domain = "Connect") {
-        if(typeof fn === "function") {
-            this.Handlers[ domain ][ event ] = fn;
-            this.call("handler-register", event, fn, domain);
-        }
-
-        return this;
-    }
-    UnregisterHandler(event, domain = "Connect") {
-        this.Handlers[ domain ][ event ] = null;
-        this.call("handler-unregister", event, domain);
-
-        return this;
-    }
-
-    BroadcastConnect(msg) {
-        for(let i in this.prop("Connection")) {
-            let conn = this.prop("Connection")[ i ];
-
-            if(conn.open) {
-                if(typeof msg === "string" || msg instanceof String) {
-                    conn.send(msg);
-                } else {
-                    conn.send(JSON.stringify(msg));
-                }
+    DataReceive(json) {
+        try {
+            let obj = json;
+    
+            while(typeof obj === "string" || obj instanceof String) {
+                obj = JSON.parse(json);
             }
+    
+            this.call("data-message", obj);
+        } catch(e) {
+            console.log("Could not parse message");
         }
+
+        return this;
     }
+    DataSend(peerId, msg) {
+        if(this.HasConnection(peerId)) {
+            let conn = this.prop("Connections")[ peerId ];
 
-    Connect(peerId) {
-        if(!this.HasPeer(peerId)) {
-            this.RegisterPeer(peerId);
+            while(!(typeof msg === "string" || msg instanceof String)) {
+                msg = JSON.stringify(msg);
+            }
+
+            conn.send(msg);
         }
 
-        let me = this.prop("Me"),
-            conn = me.connect(peerId);
+        return this;
+    }
+    DataBroadcast(msg) {
+        for(let uuid in this.prop("Connections")) {
+            this.DataSend(uuid, msg);
+        }
 
-        this.call("connection-open", peerId, conn);
-        this.RegisterConnection(peerId, conn);
+        return this;
+    }
+    
+    Connect(peerId) {
+        try {
+            let conn = this.Connector.connect(peerId);
+    
+            this.Register(peerId, conn);
+        } catch(e) {
+            console.log(`[Connection Failed]: `, e);
+        }
 
         return this;
     }
     Disconnect(peerId) {
-        this.UnregisterPeer(peerId);
-        let conn = this.UnregisterConnection(peerId);
+        try {
+            let conn = this.prop("Connections")[ peerId ];
+    
+            if(conn.open) {
+                conn.close();
+            }
+        } catch(e) {
+            console.log(`[Closure Failure]: `, e);
+        }
 
-        conn.close();
+        this.Unregister(peerId);
+
+        return this;
+    }
+
+    Register(peerId, conn = null) {
+        this.RegisterPeer(peerId);
+        this.RegisterConnection(peerId, conn);
+
+        return this;
+    }
+    Unregister(peerId) {
+        this.UnregisterPeer(peerId);
+        this.UnregisterConnection(peerId);
 
         return this;
     }
 
     HasPeer(peerId) {
-        return this.prop("Peer").includes(peerId);
+        return this.prop("Peers").includes(peerId);
     }
     RegisterPeer(peerId) {
-        let peers = this.prop("Peer");
+        if(!this.HasPeer(peerId)) {
+            this.prop("Peers").push(peerId);
+        }
 
-        peers.push(peerId);
-        this.call("peer-register", peerId);
-
-        return this.prop("Peer", peers);
+        return this;
     }
     UnregisterPeer(peerId) {
-        let peers = this.prop("Peer");
+        this.prop("Peers", this.prop("Peers").filter(p => p !== peerId));
 
-        peers = peers.filter(p => p !== peerId);
-        this.call("peer-unregister", peerId);
-
-        this.prop("Peer", peers);
-
-        return peerId;
+        return this;
     }
 
-    //  These only currently allow for 1 connection per peer (e.g. MediaConnection XOR DataConnection)
+    HasConnection(peerId) {
+        return Object.keys(this.prop("Connections")).includes(peerId);
+    }
     RegisterConnection(peerId, conn) {
-        let conx = this.prop("Connection");
+        if(!this.HasConnection(peerId)) {
+            conn.on("data", this.DataReceive.bind(this));
 
-        conx[ peerId ] = conn;
-        this.call("connection-register", peerId, conn);
-
-        if(typeof this.Handlers.Connect.open === "function") {
-            conn.on("open", this.Handlers.Connect.open.bind(this));
-        }
-        if(typeof this.Handlers.Connect.data === "function") {
-            conn.on("data", this.Handlers.Connect.data.bind(this));
-        }
-        if(typeof this.Handlers.Connect.close === "function") {
-            conn.on("close", this.Handlers.Connect.close.bind(this));
-        }
-        if(typeof this.Handlers.Connect.error === "function") {
-            conn.on("error", this.Handlers.Connect.error.bind(this));
+            this.prop("Connections")[ peerId ] = conn;
         }
 
-        return this.prop("Connection", conx);
+        return this;
     }
     UnregisterConnection(peerId) {
-        let conx = this.prop("Connection"),
-            conn = conx[ peerId ];
+        delete this.prop("Connections")[ peerId ];
 
-        delete conx[ peerId ];
-        this.call("connection-unregister", peerId);
-
-        this.prop("Connection", conx);
-
-        return conn;
+        return this;
     }
 }
 
