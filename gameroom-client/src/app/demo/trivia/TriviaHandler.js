@@ -12,4 +12,8 @@ export default class TriviaHandler extends Handler {
         console.log(msg);
         console.log("--------- END TRIVIA HANDLER ---------");
     }
+
+    OnChatMessage(msg) {
+        this.SubRoute("chat", msg);
+    }
 }
