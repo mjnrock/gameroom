@@ -24,6 +24,12 @@ export default class Registry extends Lux.Core.ClassDecorators.StateEvents {
     }
 
     Register(module) {
+        if(Array.isArray(module)) {
+            for(let mod of module) {
+                return this.Register(mod);
+            }
+        }
+
         this.Modules[ module.prop("Name") ] = module;
 
         return this;

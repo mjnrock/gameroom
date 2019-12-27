@@ -11,7 +11,7 @@ export default class App extends Main {
         );
 
         this.Handler.AttachController(this);
-        
+
         this.Registry.Register(new Modules.Chat.ChatManager());
     }
 }
