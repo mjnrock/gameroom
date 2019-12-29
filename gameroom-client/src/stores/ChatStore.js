@@ -4,7 +4,7 @@ import Chat from "./../modules/chat/package";
 class ChatStore {
     @observable Room = {};
     @observable Channels = {};
-    @observable Manager = new Chat.ChatManager();
+    @observable Manager = new Chat.GameChatManager();
 
     constructor() {
         this.Room = {

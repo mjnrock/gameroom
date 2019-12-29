@@ -15,14 +15,14 @@ class App extends Component {
         this.PeerClient = new PeerClient();
         this.PeerClient.Handlers.Connect.data = data => {
             try {
-                const ChatManager = this.props.store.ChatStore.Manager;
+                const GameChatManager = this.props.store.ChatStore.Manager;
 
                 let obj = JSON.parse(data);
 
                 if(obj.Type === "ChatMessage") {
-                    ChatManager.SendRoom(obj.Message);
+                    GameChatManager.SendRoom(obj.Message);
                 } else if(obj.Type === "ChannelSync") {
-                    ChatManager.prop("Room").SyncChannel(obj.Messages);
+                    GameChatManager.prop("Room").SyncChannel(obj.Messages);
                 }
             } catch(e) {
                 console.log("Error parsing JSON from Peer data");
@@ -31,18 +31,18 @@ class App extends Component {
 
         //TODO Something about this implementation doesn't feel right, but at a basic level it seems to work
         this.PeerClient.Handlers.Connect.open = () => {
-            const ChatManager = this.props.store.ChatStore.Manager;
+            const GameChatManager = this.props.store.ChatStore.Manager;
 
             this.PeerClient.BroadcastConnect({                      // Send to peer message queue
                 Type: "ChannelSync",
                 Channel: "Room",
-                Messages: ChatManager.prop("Room").prop("Messages")
+                Messages: GameChatManager.prop("Room").prop("Messages")
             });
         };
     }
     
     OnConnectPeer(e) {
-        const ChatManager = this.props.store.ChatStore.Manager;
+        const GameChatManager = this.props.store.ChatStore.Manager;
 
         if(e.which === 13) {
             let peerId = this.inpConnectPeer.current.value;
@@ -52,13 +52,13 @@ class App extends Component {
     }
 
     OnChatSend(e) {
-        const ChatManager = this.props.store.ChatStore.Manager;
+        const GameChatManager = this.props.store.ChatStore.Manager;
 
         if(e.which === 13) {
             let message = new Message(this.PeerClient.prop("Me")._id, this.inpChatMessage.current.value);
 
-            // ChatManager.SendRoom(this.PeerClient.UUID(), message);  // Load into local message queue
-            ChatManager.SendRoom(message);  // Load into local message queue
+            // GameChatManager.SendRoom(this.PeerClient.UUID(), message);  // Load into local message queue
+            GameChatManager.SendRoom(message);  // Load into local message queue
             this.PeerClient.BroadcastConnect({                      // Send to peer message queue
                 Type: "ChatMessage",
                 Channel: "Room",

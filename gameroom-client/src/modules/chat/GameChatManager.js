@@ -1,8 +1,8 @@
-import AManager from "./../AManager";
+import AManager from "../AManager";
 
 import Channel from "./Channel";
 
-class ChatManager extends AManager {
+class GameChatManager extends AManager {
     constructor() {
         super(
             "chat"
@@ -79,7 +79,7 @@ class ChatManager extends AManager {
     }
 }
 
-export default ChatManager;
+export default GameChatManager;
 
 
 //*     Sample Usage Code

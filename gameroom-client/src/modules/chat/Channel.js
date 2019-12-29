@@ -7,14 +7,10 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
 
         this.prop("Name", name);
         this.prop("Messages", []);
-        this.prop("Members", []);
+        this.prop("Members", {});
     }
 
-    SyncChannel(messages) {        
-        // console.log("****************************");
-        // console.log("INSIDE");
-        // console.log("****************************");
-
+    SyncChannel(messages) {
         let A = this.prop("Messages"),
             B = messages,
             Auuid = A.map(m => m.UUID),
@@ -28,15 +24,6 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
         for(let key in diff) {
             A.push(Bo[ diff[ key ] ]);
         }
-        
-        // console.log("****************************");
-        // console.log(A);
-        // console.log(B);
-        // console.log(Auuid);
-        // console.log(Buuid);
-        // console.log(Bo);
-        // console.log(diff);
-        // console.log("****************************");
 
         this.prop("Messages", A);
 
@@ -63,11 +50,26 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
         return this;
     }
 
-    AddMember(uuid) {
+    AddMember(uuid, {
+        user = null
+    } = {}) {
+        let members = this.prop("Members");
+        
+        members[ uuid ] = {
+            UUID: uuid,
+            Username: user
+        };
+
+        this.prop("Members", members);
         
         return this;
     }
     RemoveMember(uuid) {
+        let members = this.prop("Members");
+        
+        delete members[ uuid ];
+
+        this.prop("Members", members);
 
         return this;
     }

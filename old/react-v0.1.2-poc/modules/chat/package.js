@@ -1,13 +1,13 @@
 import Message from "./Message";
 import Channel from "./Channel";
-import ChatManager from "./ChatManager";
+import GameChatManager from "./GameChatManager";
 
 export default {
     create(parent) {
-        return new ChatManager(parent);
+        return new GameChatManager(parent);
     },
 
     Message,
     Channel,
-    ChatManager
+    GameChatManager
 };

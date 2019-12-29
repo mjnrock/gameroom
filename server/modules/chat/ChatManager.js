@@ -5,7 +5,7 @@ import Lux from "@lespantsfancy/lux";
 import Channel from "./Channel";
 import Message from "./Message";
 
-class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
+class GameChatManager extends Lux.Core.ClassDecorators.StateEvents {
     constructor() {
         super();
     // constructor(parent) {
@@ -104,7 +104,7 @@ class ChatManager extends Lux.Core.ClassDecorators.StateEvents {
     // }
 }
 
-export default ChatManager;
+export default GameChatManager;
 
 
 //*     Sample Usage Code

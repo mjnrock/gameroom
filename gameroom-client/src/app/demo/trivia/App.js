@@ -12,7 +12,7 @@ export default class App extends Main {
 
         this.Handler.AttachController(this);
 
-        this.Registry.Register(new Modules.Chat.ChatManager());
+        this.Registry.Register(new Modules.Chat.GameChatManager());
 
         // setInterval(() => comp.setState({
         //     cat: comp.state.cat + 1
