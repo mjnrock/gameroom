@@ -1,10 +1,13 @@
 import Lux from "@lespantsfancy/lux";
+import AModuleManager from "./../AModuleManager";
 
 import Channel from "./Channel";
 
-class ChannelManager extends Lux.Core.ClassDecorators.StateEvents {
+class ChannelManager extends AModuleManager {
     constructor() {
-        super();
+        super(
+            "chat"
+        );
 
         this.prop("Channels", {});
 
@@ -18,7 +21,7 @@ class ChannelManager extends Lux.Core.ClassDecorators.StateEvents {
         channels[ name ].watch("Messages", (prop, data, _this) => {
             let lastMsg = data[ data.length - 1 ];
 
-            this.call("channel-message", lastMsg, channels[ name ]);
+            this.call("channel-message", channels[ name ], lastMsg);
         });
 
         this.prop("Channels", channels);
@@ -77,7 +80,7 @@ export default ChannelManager;
 // CM.SendRoom(1, 2, 3);
 
 // //TODO Take this sample listener and register parent on initialization
-// CM.on("channel-message", (target, msg, channel) => {
+// CM.on("channel-message", (target, channel, msg) => {
 //     console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
 // });
 // CM.AddTeamChannel("Cats");

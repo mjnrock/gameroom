@@ -4,6 +4,7 @@ import Tone from "tone";
 
 import PeerClient from "./lib/PeerClient";
 import Chat from "./modules/chat/package";
+import Network from "./modules/network/package";
 
 import Demo from "./app/demo/package";
 
@@ -16,21 +17,21 @@ class App extends Component {
         this.inpConnectPeer = React.createRef();
         this.inpChatMessage = React.createRef();
 
-        this.PeerClient = new PeerClient();
-        this.PeerClient.listen("json-message", ([ target, message ]) => {
-            this.RouteMessage(message);
-        });
+        // this.PeerClient = new PeerClient();
+        // this.PeerClient.listen("json-data", ([ target, message ]) => {
+        //     this.RouteMessage(message);
+        // });
 
         this.ChannelManager = new Chat.ChannelManager();
         this.ChannelManager.CreateChannel("Room");
 
         //? Using MobX
-        this.ChannelManager.listen("channel-message", ([ cm, msg, channel]) => {
+        this.ChannelManager.listen("channel-message", ([ cm, channel, msg]) => {
             this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
         });
 
         //? Using this.state
-        // this.ChannelManager.listen("channel-message", ([ cm, msg, channel]) => {
+        // this.ChannelManager.listen("channel-message", ([ cm, channel, msg]) => {
         //     let messages = this.state[ channel.prop("Name") ] || [];
         //     messages.push(msg);
 
@@ -44,12 +45,17 @@ class App extends Component {
         // };
 
         //  ------- DEMO -------
-        let Trivia = new Demo.Trivia.App();
-        console.log(Trivia);
-        
-        this.PeerClient.listen("json-message", ([ target, message ]) => {
-            Trivia.Handler.ReceiveMessage(message);
+        this.Trivia = new Demo.Trivia.App();
+        console.log(this.Trivia);
+
+        this.Trivia.Get("chat").listen("channel-message", ([ cm, channel, msg]) => {
+            this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
         });
+        
+        // this.PeerClient = Trivia.Get("network")
+        // this.PeerClient.listen("json-data", ([ target, message ]) => {
+        //     Trivia.Handler.ReceiveMessage(message);
+        // });
         //  ----- END DEMO -----
     }
 
@@ -79,20 +85,34 @@ class App extends Component {
         if(e.which === 13) {
             let peerId = this.inpConnectPeer.current.value;
 
-            this.PeerClient.Connect(peerId);
+            // this.PeerClient.Connect(peerId);
+            this.Trivia.Get("network").ConnectToPeer(peerId);
         }
     }
 
     OnChatSend() {
-        let message = new Chat.Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
+        let TriviaNetwork = this.Trivia.Get("network"),
+            message = new Chat.Message(
+                TriviaNetwork.prop("ConnectorID"),
+                this.inpChatMessage.current.value
+            );
 
         this.ChannelManager.Send("Room", message);  // Load into local message queue
-        this.PeerClient.BroadcastJSON({                      // Send to peer message queue
+        TriviaNetwork.BroadcastPacket({                      // Send to peer message queue
             Type: "ChatMessage",
             Channel: "Room",
             // Message: new Message(this.PeerClient.UUID(), message)
             Message: message
         });
+        // let message = new Chat.Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
+
+        // this.ChannelManager.Send("Room", message);  // Load into local message queue
+        // this.PeerClient.BroadcastJSON({                      // Send to peer message queue
+        //     Type: "ChatMessage",
+        //     Channel: "Room",
+        //     // Message: new Message(this.PeerClient.UUID(), message)
+        //     Message: message
+        // });
 
         this.inpChatMessage.current.value = null;
     }
@@ -103,6 +123,8 @@ class App extends Component {
 
     render() {
         const { ChatStore } = this.props.store;
+
+        console.log(this.Trivia.Get("network"))
 
         return (
             <div>
@@ -117,7 +139,8 @@ class App extends Component {
                 >Sound!</button>
 
                 <div className="container">
-                    <h3>{ this.PeerClient.prop("ID") }</h3>
+                    <h3>{ this.Trivia.Get("network").prop("ConnectorID") }</h3>
+                    {/* <h3>{ this.PeerClient.prop("ID") }</h3> */}
                     {/* <h3>{ this.PeerClient.UUID() }</h3> */}
 
                     <input
@@ -140,7 +163,7 @@ class App extends Component {
                             ChatStore.Messages[ "Room" ].map((msg, i) => (
                             // this.ChannelManager.Get("Room").prop("Messages").map((msg, i) => (
                                 <li className={ `list-group-item pa0 bn` } key={ i }>
-                                    <div className={ `mb1 alert ${ msg.Author === this.PeerClient.prop("ID") ? "alert-primary" : "alert-secondary" }` }>
+                                    <div className={ `mb1 alert ${ msg.Author === this.Trivia.Get("network").prop("ConnectorID") ? "alert-primary" : "alert-secondary" }` }>
                                         <span className="b">[{ msg.Author }]:&nbsp;</span>
                                         <span>{ msg.Content }</span>
                                     </div>

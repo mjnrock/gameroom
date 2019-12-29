@@ -139,7 +139,7 @@ PEER_SERVER.on("connection", (clientId) => {
 // const CM = ChatModule.create(Parent);
 
 // //TODO Take this sample listener and register parent on initialization
-// // CM.on("channel-message", (target, msg, channel) => {
+// // CM.on("channel-message", (target, channel, msg) => {
 // //     console.log(`[${ channel.prop("Name") }][${ msg.Author }]: ${ msg.Content }`);
 // // });
 // CM.AddTeamChannel("Cats");

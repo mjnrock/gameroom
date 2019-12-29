@@ -7,13 +7,13 @@
 * In practice, this should probably be a very low-level (i.e. `core`) module and all apps should have it
 
 ### Message Bus Example
-Attach the `{App}.Handler` to the `"json-message"` event that the `PeerClient` will fire:
+Attach the `{App}.Handler` to the `"json-data"` event that the `PeerClient` will fire:
 ```
 //  ------- DEMO -------
 let Trivia = new Demo.Trivia.App();
 console.log(Trivia);
 
-this.PeerClient.listen("json-message", ([ target, message ]) => {
+this.PeerClient.listen("json-data", ([ target, message ]) => {
     Trivia.Handler.ReceiveMessage(message);
 });
 //  ----- END DEMO -----
