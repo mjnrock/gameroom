@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import Tone from "tone";
 
-import PeerClient from "./lib/PeerClient";
+// import PeerClient from "./lib/PeerClient";
 import Chat from "./modules/chat/package";
 import Network from "./modules/network/package";
 
@@ -92,31 +92,33 @@ class App extends Component {
     }
 
     OnChatSend() {
-        let TriviaNetwork = this.Trivia.Get("network"),
-            TriviaChat = this.Trivia.Get("chat"),
-            message = new Chat.Message(
-                TriviaNetwork.prop("ConnectorID"),
-                this.inpChatMessage.current.value
-            );
-
-        TriviaChat.Send("Lobby", message);  // Load into local message queue
-        TriviaNetwork.BroadcastPacket({                      // Send to peer message queue
-            Type: "ChatMessage",
-            Channel: "Lobby",
-            // Message: new Message(this.PeerClient.UUID(), message)
-            Message: message
-        });
-        // let message = new Chat.Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
-
-        // this.ChannelManager.Send("Room", message);  // Load into local message queue
-        // this.PeerClient.BroadcastJSON({                      // Send to peer message queue
-        //     Type: "ChatMessage",
-        //     Channel: "Room",
-        //     // Message: new Message(this.PeerClient.UUID(), message)
-        //     Message: message
-        // });
-
-        this.inpChatMessage.current.value = null;
+        if(/.*\S.*/gmi.test(this.inpChatMessage.current.value)) {
+            let TriviaNetwork = this.Trivia.Get("network"),
+                TriviaChat = this.Trivia.Get("chat"),
+                message = new Chat.Message(
+                    TriviaNetwork.prop("ConnectorID"),
+                    this.inpChatMessage.current.value
+                );
+    
+            TriviaChat.Send("Lobby", message);  // Load into local message queue
+            TriviaNetwork.BroadcastPacket({                      // Send to peer message queue
+                Type: "ChatMessage",
+                Channel: "Lobby",
+                // Message: new Message(this.PeerClient.UUID(), message)
+                Message: message
+            });
+            // let message = new Chat.Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
+    
+            // this.ChannelManager.Send("Room", message);  // Load into local message queue
+            // this.PeerClient.BroadcastJSON({                      // Send to peer message queue
+            //     Type: "ChatMessage",
+            //     Channel: "Room",
+            //     // Message: new Message(this.PeerClient.UUID(), message)
+            //     Message: message
+            // });
+    
+            this.inpChatMessage.current.value = null;
+        }
     }
 
     componentDidUpdate() {

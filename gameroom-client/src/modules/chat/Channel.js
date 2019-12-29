@@ -38,6 +38,10 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
     }
 
     AddMessage(msg) {
+        if(!/.*\S.*/gmi.test(msg)) {
+            return false;
+        }
+
         let messages = this.prop("Messages");
 
         if(msg instanceof Message) {
