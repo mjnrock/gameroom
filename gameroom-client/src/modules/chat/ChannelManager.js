@@ -58,10 +58,10 @@ class ChannelManager extends Lux.Core.ClassDecorators.StateEvents {
             if(channel) {
                 channel.AddMessage(...payload);
             } else {
-                console.log(`[Invalid Channel]: Nah.`);
+                console.log(`[Invalid Channel]`);
             }
         } catch (e) {
-            console.log(`[Invalid Message]: Nah.`);
+            console.log(`[Invalid Message]: `, e);
         }
 
         return this;

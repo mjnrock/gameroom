@@ -1,11 +1,13 @@
 import Lux from "@lespantsfancy/lux";
 
 class Message {
-    constructor(author, content, ts = null) {
-        this.UUID = Lux.Core.Helper.GenerateUUID();
+    constructor(author, content, ts = null, uuid = null) {
+        this.UUID = uuid || Lux.Core.Helper.GenerateUUID();
         this.Author = author;
         this.Content = content;
         this.Timestamp = ts || Date.now();
+
+        return Object.freeze(this);
     }
 
     static fromJSON(json) {
@@ -15,8 +17,7 @@ class Message {
             obj = JSON.parse(obj);
         }
 
-        let msg = new Message(obj.Author, obj.Content, obj.Timestamp);
-        msg.UUID = obj.UUID;
+        let msg = new Message(obj.Author, obj.Content, obj.Timestamp, obj.UUID);
 
         return msg;
     }

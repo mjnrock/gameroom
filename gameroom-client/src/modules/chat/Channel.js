@@ -8,6 +8,11 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
         this.prop("Name", name);
         this.prop("Messages", []);
         this.prop("Members", {});
+        
+        this.on("sync");
+        this.on("message");
+        this.on("member-add");
+        this.on("member-remove");
     }
 
     SyncChannel(messages) {
@@ -27,6 +32,8 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
 
         this.prop("Messages", A);
 
+        this.call("sync", this);
+
         return this;
     }
 
@@ -37,8 +44,12 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
             messages.push(msg);
 
             this.prop("Messages", messages);
+            
+            this.call("message", msg, this);
         } else if(typeof msg === "object") {
             if(msg.Author && msg.Content) {
+                this.call("message", msg, this);
+
                 return this.AddMessage(Message.fromJSON(msg));
             }
 
@@ -61,6 +72,8 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
         };
 
         this.prop("Members", members);
+
+        this.call("member-add", uuid, members[ uuid ]);
         
         return this;
     }
@@ -70,6 +83,8 @@ class Channel extends Lux.Core.ClassDecorators.StateEvents {
         delete members[ uuid ];
 
         this.prop("Members", members);
+        
+        this.call("member-remove", uuid, members[ uuid ]);
 
         return this;
     }
