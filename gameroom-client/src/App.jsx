@@ -22,13 +22,13 @@ class App extends Component {
         //     this.RouteMessage(message);
         // });
 
-        this.ChannelManager = new Chat.ChannelManager();
-        this.ChannelManager.CreateChannel("Room");
+        // this.ChannelManager = new Chat.ChannelManager();
+        // this.ChannelManager.CreateChannel("Room");
 
-        //? Using MobX
-        this.ChannelManager.listen("channel-message", ([ cm, channel, msg]) => {
-            this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
-        });
+        // //? Using MobX
+        // this.ChannelManager.listen("channel-message", ([ cm, channel, msg]) => {
+        //     this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
+        // });
 
         //? Using this.state
         // this.ChannelManager.listen("channel-message", ([ cm, channel, msg]) => {
@@ -48,6 +48,7 @@ class App extends Component {
         this.Trivia = new Demo.Trivia.App();
         console.log(this.Trivia);
 
+        //? Using MobX, inject Chat Message into store, sent from Network module and received by TriviaHandler
         this.Trivia.Get("chat").listen("channel-message", ([ cm, channel, msg]) => {
             this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
         });
