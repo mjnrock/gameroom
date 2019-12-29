@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
+const https = require("https");
 const server = express();
 // const expressWs = require("express-ws")(server);
 // const aWss = expressWs.getWss("/");
@@ -94,7 +95,15 @@ server.get("/v", (req, res) => {
 //     });
 // }
 
+
+var privateKey = fs.readFileSync( './certificates/key.pem' );
+var certificate = fs.readFileSync( './certificates/cert.pem' );
+
 const SERVER = server.listen(App.Server.Port);
+// const SERVER = https.createServer({
+//     key: privateKey,
+//     cert: certificate
+// }, server).listen(App.Server.Port + 1);
 
 const peerOptions = {
     debug: true,

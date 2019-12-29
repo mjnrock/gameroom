@@ -32,19 +32,19 @@ class App extends Component {
         //  ----- END DEMO -----
     }
 
-    componentDidMount() {
+    SendSound() {
         //a 4 voice Synth
         var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
         //play a chord
-        polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
+        polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "0.2");
 
-        var loop = new Tone.Loop(function(time) {
-            polySynth.triggerAttackRelease(["C4", "E4", "G3", "A3"], "2n", time);
-        }, "2n");
-        loop.start("1m").stop("4m");
-        Tone.Transport.start();
+        // var loop = new Tone.Loop(function(time) {
+        //     polySynth.triggerAttackRelease(["C4", "E4", "G3", "A3"], "2n", time);
+        // }, "2n");
+        // loop.start("1m").stop("4m");
+        // Tone.Transport.start();
 
-        console.log(polySynth.context);
+        // console.log(polySynth.context);
     }
 
 
@@ -66,22 +66,24 @@ class App extends Component {
         }
     }
 
-    OnChatSend(e) {
+    OnChatSend() {
         const ChatManager = this.props.store.ChatStore.Manager;
 
-        if(e.which === 13) {
-            let message = new Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
+        let message = new Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
 
-            ChatManager.SendRoom(message);  // Load into local message queue
-            this.PeerClient.BroadcastJSON({                      // Send to peer message queue
-                Type: "ChatMessage",
-                Channel: "Room",
-                // Message: new Message(this.PeerClient.UUID(), message)
-                Message: message
-            });
+        ChatManager.SendRoom(message);  // Load into local message queue
+        this.PeerClient.BroadcastJSON({                      // Send to peer message queue
+            Type: "ChatMessage",
+            Channel: "Room",
+            // Message: new Message(this.PeerClient.UUID(), message)
+            Message: message
+        });
 
-            this.inpChatMessage.current.value = null;
-        }
+        this.inpChatMessage.current.value = null;
+    }
+
+    componentDidUpdate() {
+        this.SendSound();
     }
 
     render() {
@@ -89,6 +91,16 @@ class App extends Component {
 
         return (
             <div>
+                <button
+                    id="sound-btn"
+                    className="btn btn-lg btn-primary"
+                    style={{
+                        width: "100%",
+                        height: "200px"
+                    }}
+                    onClick={ this.SendSound.bind(this) }
+                >Sound!</button>
+
                 <div className="container">
                     <h3>{ this.PeerClient.prop("ID") }</h3>
                     {/* <h3>{ this.PeerClient.UUID() }</h3> */}
@@ -96,7 +108,7 @@ class App extends Component {
                     <input
                         className="form-control mt2"
                         id="chat-send"
-                        type="text"
+                        type="number"
                         ref={ this.inpConnectPeer }
                         onKeyUp={ this.OnConnectPeer.bind(this) }
                     />
@@ -125,8 +137,18 @@ class App extends Component {
                         id="chat-send"
                         type="text"
                         ref={ this.inpChatMessage }
-                        onKeyUp={ this.OnChatSend.bind(this) }
+                        onKeyUp={ (e) => {
+                            if(e.which === 13) {
+                                this.OnChatSend();
+                            }
+                        }}
                     />
+                    <button
+                        className="btn btn-lg btn-primary"
+                        onClick={ this.OnChatSend.bind(this) }
+                    >
+                        Send
+                    </button>
                 </div>
             </div>
         );
