@@ -4,7 +4,7 @@ import TriviaHandler from "./TriviaHandler";
 import Modules from "./../../../modules/package";
 
 export default class App extends Main {
-    constructor() {
+    constructor(comp) {
         super(
             "trivia",
             new TriviaHandler()
@@ -13,5 +13,9 @@ export default class App extends Main {
         this.Handler.AttachController(this);
 
         this.Registry.Register(new Modules.Chat.ChatManager());
+
+        // setInterval(() => comp.setState({
+        //     cat: comp.state.cat + 1
+        // }), 500);
     }
 }

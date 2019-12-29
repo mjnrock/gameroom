@@ -97,11 +97,11 @@ server.get("/v", (req, res) => {
 const SERVER = server.listen(App.Server.Port);
 
 const peerOptions = {
-    debug: true
-    // ssl: {
-    //     key: fs.readFileSync("./certificates/key.pem", "utf8"),
-    //     cert: fs.readFileSync("./certificates/cert.pem", "utf8")
-    // }
+    debug: true,
+    ssl: {
+        key: fs.readFileSync("./certificates/key.pem", "utf8"),
+        cert: fs.readFileSync("./certificates/cert.pem", "utf8")
+    }
 };
 const PEER_SERVER = ExpressPeerServer(SERVER, peerOptions);
 server.use("/peer", PEER_SERVER);

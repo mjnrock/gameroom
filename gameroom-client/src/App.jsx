@@ -6,6 +6,8 @@ import Message from "./modules/chat/Message";
 
 import Demo from "./app/demo/package";
 
+import Tone from "tone";
+
 @inject("store")
 @observer
 class App extends Component {
@@ -28,6 +30,21 @@ class App extends Component {
             Trivia.Handler.ReceiveMessage(message);
         });
         //  ----- END DEMO -----
+    }
+
+    componentDidMount() {
+        //a 4 voice Synth
+        var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+        //play a chord
+        polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
+
+        var loop = new Tone.Loop(function(time) {
+            polySynth.triggerAttackRelease(["C4", "E4", "G3", "A3"], "2n", time);
+        }, "2n");
+        loop.start("1m").stop("4m");
+        Tone.Transport.start();
+
+        console.log(polySynth.context);
     }
 
 
