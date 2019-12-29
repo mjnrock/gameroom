@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+              crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        
+        <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <title>Gameroom Client</title>
+    </head>
+    <body>
+        <div
+            id="peer-id"
+            class="form-control"
+        ></div>
+
+        <div>
+            <div>
+                <p>Me</p>
+                <video id="me-video" height="120" width="160" autoplay></video>
+            </div>
+            <div>
+                <p>Peer</p>
+                <video id="call-video" height="120" width="160" autoplay></video>
+            </div>
+        </div>
+
+        <input id="connection-id" type="text" />
+
+        <button id="data-send" class="btn btn-lg btn-primary">Send</button>
+
+        <div id="log"></div>
+          
+        <script>
+            (function () {
+                var old = console.log;
+                var logger = document.getElementById('log');
+                console.log = function (message) {
+                    old(message);
+
+                    if (typeof message == 'object') {
+                        logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+                    } else {
+                        logger.innerHTML += message + '<br />';
+                    }
+                }
+            })();
+
+            $(document).ready(function() {
+                let peer = null;
+                let peerId = null;
+                let conn = null;
+                
+                peer = new Peer((Math.random() * 100).toFixed(0), {
+                    host: "192.168.86.97",
+                    port: 3001,
+                    path: "/peer",
+                    debug: 3
+                });
+                peer.on("open", id => {
+                    peerId = id;
+
+                    $("#peer-id").html(peerId);
+                });
+                // This will fire on the "receiver" side
+                peer.on("connection", c => {
+                    console.log(`[Connection Opened]`);
+                    console.log(c);
+                    conn = c;
+                    
+                    conn.on("open", () => {
+                        console.log(`[Connection Open]`);
+                    });
+
+                    conn.on("data", data => {
+                        console.log(data);
+                    });
+                });
+                peer.on("error", err => {
+                    console.log(err);
+                });
+
+                peer.on('call', function(call) {
+                    conn = call;
+
+                    navigator.getUserMedia({video: false, audio: true}, function(stream) {
+                        call.answer(stream); // Answer the call with an A/V stream.
+                        $("#me-video")[ 0 ].srcObject = stream;
+
+                        call.on('stream', function(remoteStream) {
+                            console.log(remoteStream);
+                            $("#call-video")[ 0 ].srcObject = remoteStream;
+                        });
+                    }, function(err) {
+                        console.log('Failed to get local stream' ,err);
+                    });
+                });
+                
+
+                $("#data-send").on("click", e => {
+                    if(conn.open) {
+                        conn.send(Math.random() * 1000);
+                    }
+                });
+
+                $("#connection-id").on("keyup", e => {
+                    let peerId = $("#connection-id").val(),
+                        videoEle = $("#call-video")[ 0 ];
+
+                        console.log(peerId, videoEle);
+
+                    if(e.originalEvent.which === 13) {
+                        navigator.getUserMedia({video: false, audio: true}, function(stream) {
+                            conn = peer.call(peerId, stream);
+                            $("#me-video")[ 0 ].srcObject = stream;
+
+                            conn.on('stream', function(remoteStream) {
+                                $("#call-video")[ 0 ].srcObject = remoteStream;
+                            });
+                        }, function(err) {
+                            console.log('Failed to get local stream' ,err);
+                        });
+
+                        // conn = peer.connect(peerId);
+
+                        // // This will fire on the "sender" side
+                        // conn.on("open", () => {
+                        //     console.log(`[Connection Open]`);
+                        // });
+
+                        // conn.on("data", data => {
+                        //     console.log(data);
+                        // });
+                    }
+                });
+            });
+        </script>
+
+        <script src="https://unpkg.com/peerjs@1.0.0/dist/peerjs.min.js"></script>
+    </body>
+</html>
