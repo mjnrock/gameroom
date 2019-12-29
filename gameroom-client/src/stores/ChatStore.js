@@ -1,7 +1,7 @@
 import { observable, action } from "mobx";
 
 class ChatStore {
-    @observable Messages = {};
+    @observable Messages = {};  // Message[ Channel.prop("Name") ]<Chat.Message[]>
 
     constructor() {        
         this.Messages[ "Room" ] = [];
