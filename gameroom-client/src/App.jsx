@@ -76,11 +76,11 @@ class App extends Component {
     }
 
 
-    RouteMessage(msg) {
-        if(msg.Type === "ChatMessage") {
-            this.ChannelManager.Send("Room", msg.Message);
-        }
-    }
+    // RouteMessage(msg) {
+    //     if(msg.Type === "ChatMessage") {
+    //         this.ChannelManager.Send("Room", msg.Message);
+    //     }
+    // }
     
     OnConnectPeer(e) {
         if(e.which === 13) {
@@ -93,15 +93,16 @@ class App extends Component {
 
     OnChatSend() {
         let TriviaNetwork = this.Trivia.Get("network"),
+            TriviaChat = this.Trivia.Get("chat"),
             message = new Chat.Message(
                 TriviaNetwork.prop("ConnectorID"),
                 this.inpChatMessage.current.value
             );
 
-        this.ChannelManager.Send("Room", message);  // Load into local message queue
+        TriviaChat.Send("Lobby", message);  // Load into local message queue
         TriviaNetwork.BroadcastPacket({                      // Send to peer message queue
             Type: "ChatMessage",
-            Channel: "Room",
+            Channel: "Lobby",
             // Message: new Message(this.PeerClient.UUID(), message)
             Message: message
         });
@@ -156,12 +157,12 @@ class App extends Component {
                 <hr />
 
                 <div className="container">
-                    <h3>{ this.ChannelManager.Get("Room").Name }</h3>
+                    <h3>{ this.Trivia.Get("chat").Get("Lobby").prop("Name") }</h3>
 
                     <ul id="chat-messages" className="list-group">
                         {
                             // this.state[ "Room" ].map((msg, i) => (
-                            ChatStore.Messages[ "Room" ].map((msg, i) => (
+                            ChatStore.Messages[ "Lobby" ].map((msg, i) => (
                             // this.ChannelManager.Get("Room").prop("Messages").map((msg, i) => (
                                 <li className={ `list-group-item pa0 bn` } key={ i }>
                                     <div className={ `mb1 alert ${ msg.Author === this.Trivia.Get("network").prop("ConnectorID") ? "alert-primary" : "alert-secondary" }` }>

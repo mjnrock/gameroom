@@ -4,7 +4,7 @@ class ChatStore {
     @observable Messages = {};  // Message[ Channel.prop("Name") ]<Chat.Message[]>
 
     constructor() {        
-        this.Messages[ "Room" ] = [];
+        this.Messages[ "Lobby" ] = [];
     }    
 
     @action
