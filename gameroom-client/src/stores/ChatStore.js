@@ -4,12 +4,14 @@ import Chat from "./../modules/chat/package";
 class ChatStore {
     @observable Room = {};
     @observable Channels = {};
-    @observable Manager = new Chat.GameChatManager();
+    @observable Manager = new Chat.ChannelManager();
 
     constructor() {
+        this.Manager.CreateChannel("Room");
+
         this.Room = {
-            Channel: this.Manager.prop("Room"),
-            Messages: this.Manager.prop("Room").prop("Messages")
+            Channel: this.Manager.Get("Room"),
+            Messages: this.Manager.Get("Room").prop("Messages")
         };
 
         this.Manager.on("channel-message", (target, msg, channel) => {

@@ -1,12 +1,10 @@
-import AManager from "../AManager";
+import Lux from "@lespantsfancy/lux";
 
 import Channel from "./Channel";
 
-class ChannelManager extends AManager {
+class ChannelManager extends Lux.Core.ClassDecorators.StateEvents {
     constructor() {
-        super(
-            "chat.channel"
-        );
+        super();
 
         this.prop("Channels", {});
 
@@ -38,6 +36,21 @@ class ChannelManager extends AManager {
         return this;
     }
 
+    Get(name) {
+        let channel = this.prop("Channels")[ name ];
+        
+        if(channel) {
+            return channel;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Send a Message to a Channel
+     * @param {Channel|string} channel 
+     * @param  {...any} payload 
+     */
     Send(channel, ...payload) {
         try {
             channel = channel instanceof Channel ? channel : this.prop("Channels")[ channel ];

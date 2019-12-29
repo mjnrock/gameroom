@@ -1,6 +1,6 @@
 import Lux from "@lespantsfancy/lux";
 
-// import AManager from "./../AManager";
+// import AModuleManager from "./../AModuleManager";
 
 import Channel from "./Channel";
 import Message from "./Message";

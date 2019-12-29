@@ -1,6 +1,6 @@
 import Lux from "@lespantsfancy/lux";
 
-class AManager extends Lux.Core.ClassDecorators.StateEvents {
+class AModuleManager extends Lux.Core.ClassDecorators.StateEvents {
     constructor(name) {
         super();
 
@@ -8,4 +8,4 @@ class AManager extends Lux.Core.ClassDecorators.StateEvents {
     }
 }
 
-export default AManager;
+export default AModuleManager;

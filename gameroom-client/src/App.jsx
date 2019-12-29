@@ -50,14 +50,14 @@ class App extends Component {
 
     RouteMessage(msg) {
         if(msg.Type === "ChatMessage") {
-            const GameChatManager = this.props.store.ChatStore.Manager;
+            const ChannelManager = this.props.store.ChatStore.Manager;
 
-            GameChatManager.SendRoom(msg.Message);
+            ChannelManager.Send("Room", msg.Message);
         }
     }
     
     OnConnectPeer(e) {
-        const GameChatManager = this.props.store.ChatStore.Manager;
+        const ChannelManager = this.props.store.ChatStore.Manager;
 
         if(e.which === 13) {
             let peerId = this.inpConnectPeer.current.value;
@@ -67,11 +67,11 @@ class App extends Component {
     }
 
     OnChatSend() {
-        const GameChatManager = this.props.store.ChatStore.Manager;
+        const ChannelManager = this.props.store.ChatStore.Manager;
 
         let message = new Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
 
-        GameChatManager.SendRoom(message);  // Load into local message queue
+        ChannelManager.Send("Room", message);  // Load into local message queue
         this.PeerClient.BroadcastJSON({                      // Send to peer message queue
             Type: "ChatMessage",
             Channel: "Room",

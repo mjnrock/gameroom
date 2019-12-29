@@ -1,6 +1,6 @@
-import AManager from "./AManager";
+import AModuleManager from "./AModuleManager";
 
-class ModuleManager extends AManager {
+class ModuleManager extends AModuleManager {
     constructor(parent) {
         super(
             "root",
@@ -10,7 +10,7 @@ class ModuleManager extends AManager {
     }
 
     SetAsParent(manager) {
-        if(manager instanceof AManager) {
+        if(manager instanceof AModuleManager) {
             manager.parent = this;
 
             return true;
