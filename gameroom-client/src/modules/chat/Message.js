@@ -17,7 +17,12 @@ class Message {
             obj = JSON.parse(obj);
         }
 
-        let msg = new Message(obj.Author, obj.Content, obj.Timestamp, obj.UUID);
+        let msg = new Message(
+            obj.Author,
+            obj.Content,
+            obj.Timestamp,
+            obj.UUID
+        );
 
         return msg;
     }

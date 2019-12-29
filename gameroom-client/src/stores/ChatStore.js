@@ -1,37 +1,19 @@
 import { observable, action } from "mobx";
-import Chat from "./../modules/chat/package";
 
 class ChatStore {
-    @observable Room = {};
-    @observable Channels = {};
-    @observable Manager = new Chat.ChannelManager();
+    @observable Messages = {};
 
-    constructor() {
-        this.Manager.CreateChannel("Room");
+    constructor() {        
+        this.Messages[ "Room" ] = [];
+    }    
 
-        this.Room = {
-            Channel: this.Manager.Get("Room"),
-            Messages: this.Manager.Get("Room").prop("Messages")
-        };
+    @action
+    AddMessage(channel, msg) {
+        if(!Array.isArray(this.Messages[ channel ])) {
+            this.Messages[ channel ] = [];
+        }
 
-        this.Manager.on("channel-message", (target, msg, channel) => {
-            let name = channel.prop("Name");
-
-            if(name !== "Room" && !this.Channels[ name ]) {
-                this.Channels[ name ] = {
-                    Channel: channel,
-                    Messages: channel.prop("Messages")
-                };
-            } else {
-                if(name === "Room") {
-                    this.Room.Messages = channel.prop("Messages");
-                } else {
-                    this.Channels[ name ].Messages = channel.prop("Messages");
-                }
-            }
-
-            console.log(msg);
-        });
+        this.Messages[ channel ].push(msg);
     }
 }
 

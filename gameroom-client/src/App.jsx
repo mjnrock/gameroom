@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import Tone from "tone";
 
 import PeerClient from "./lib/PeerClient";
-import Message from "./modules/chat/Message";
+import Chat from "./modules/chat/package";
 
 import Demo from "./app/demo/package";
-
-import Tone from "tone";
 
 @inject("store")
 @observer
@@ -21,6 +20,28 @@ class App extends Component {
         this.PeerClient.listen("json-message", ([ target, message ]) => {
             this.RouteMessage(message);
         });
+
+        this.ChannelManager = new Chat.ChannelManager();
+        this.ChannelManager.CreateChannel("Room");
+
+        //? Using MobX
+        this.ChannelManager.listen("channel-message", ([ cm, msg, channel]) => {
+            this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
+        });
+
+        //? Using this.state
+        // this.ChannelManager.listen("channel-message", ([ cm, msg, channel]) => {
+        //     let messages = this.state[ channel.prop("Name") ] || [];
+        //     messages.push(msg);
+
+        //     this.setState({
+        //         [ channel.prop("Name") ]: messages
+        //     });
+        // });
+
+        // this.state = {
+        //     Room: []
+        // };
 
         //  ------- DEMO -------
         let Trivia = new Demo.Trivia.App();
@@ -50,15 +71,11 @@ class App extends Component {
 
     RouteMessage(msg) {
         if(msg.Type === "ChatMessage") {
-            const ChannelManager = this.props.store.ChatStore.Manager;
-
-            ChannelManager.Send("Room", msg.Message);
+            this.ChannelManager.Send("Room", msg.Message);
         }
     }
     
     OnConnectPeer(e) {
-        const ChannelManager = this.props.store.ChatStore.Manager;
-
         if(e.which === 13) {
             let peerId = this.inpConnectPeer.current.value;
 
@@ -67,11 +84,9 @@ class App extends Component {
     }
 
     OnChatSend() {
-        const ChannelManager = this.props.store.ChatStore.Manager;
+        let message = new Chat.Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
 
-        let message = new Message(this.PeerClient.prop("ID"), this.inpChatMessage.current.value);
-
-        ChannelManager.Send("Room", message);  // Load into local message queue
+        this.ChannelManager.Send("Room", message);  // Load into local message queue
         this.PeerClient.BroadcastJSON({                      // Send to peer message queue
             Type: "ChatMessage",
             Channel: "Room",
@@ -117,11 +132,13 @@ class App extends Component {
                 <hr />
 
                 <div className="container">
-                    <h3>{ ChatStore.Room.Channel.prop("Name") }</h3>
+                    <h3>{ this.ChannelManager.Get("Room").Name }</h3>
 
                     <ul id="chat-messages" className="list-group">
                         {
-                            ChatStore.Room.Messages.map((msg, i) => (
+                            // this.state[ "Room" ].map((msg, i) => (
+                            ChatStore.Messages[ "Room" ].map((msg, i) => (
+                            // this.ChannelManager.Get("Room").prop("Messages").map((msg, i) => (
                                 <li className={ `list-group-item pa0 bn` } key={ i }>
                                     <div className={ `mb1 alert ${ msg.Author === this.PeerClient.prop("ID") ? "alert-primary" : "alert-secondary" }` }>
                                         <span className="b">[{ msg.Author }]:&nbsp;</span>

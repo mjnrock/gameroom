@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "mobx-react";
 
 import "./index.css";
 import App from "./App";
 
+import { Provider } from "mobx-react";
 import ChatStore from "./stores/ChatStore";
 
 const store = window.store = {
@@ -16,3 +16,8 @@ ReactDOM.render(
         <App />
     </Provider>,
 document.getElementById("root"));
+
+
+// ReactDOM.render(
+//     <App />,
+// document.getElementById("root"));
