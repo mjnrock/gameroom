@@ -13,7 +13,7 @@ Attach the `{App}.Handler` to the `"json-data"` event that the `PeerClient` will
 let Trivia = new Demo.Trivia.App();
 console.log(Trivia);
 
-this.PeerClient.listen("json-data", ([ target, message ]) => {
+Trivia.Get("network").listen("message-extraction", ([ target, message ]) => {
     Trivia.Handler.ReceiveMessage(message);
 });
 //  ----- END DEMO -----
