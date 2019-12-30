@@ -10,13 +10,7 @@ export default class App extends Main {
             new TriviaHandler()
         );
 
-        this.Handler.AttachController(this);
-
-        this.Registry.Register(new Modules.Chat.ChannelManager());
-        this.Get("chat").CreateChannel("Lobby");
-
-        this.Registry.Register(new Modules.Network.NetworkManager());
-        
+        this.Handler.AttachController(this);        
         this.Handler.AttachListeners();
 
         // setInterval(() => comp.setState({
