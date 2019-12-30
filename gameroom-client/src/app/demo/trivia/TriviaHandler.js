@@ -7,18 +7,8 @@ export default class TriviaHandler extends Handler {
         );
     }
 
-    AttachListeners() {
-        if(this.Controller) {
-            this.Controller.Get("network").listen("message-extraction", ([ controller, msg ]) => {
-                this.ReceiveMessage(msg.Data, msg.Type);
-            });
-        } else {
-            throw new Error("No Controller has been defined");
-        }
-    }
-
     ReceiveMessage(msg, type = "json") {
-        this.Controller.Get("chat").Get(msg.Channel).AddMessage(msg.Message);
+        Handler.prototype.ReceiveMessage.call(this, msg);
 
         console.log("----------- TRIVIA HANDLER -----------");
         console.log(msg);

@@ -52,6 +52,9 @@ class App extends Component {
         this.Trivia.Get("chat").listen("channel-message", ([ cm, channel, msg]) => {
             this.props.store.ChatStore.AddMessage(channel.prop("Name"), msg);
         });
+        this.Trivia.Get("network").prop("Connector").listen("data-connection", ([ cm, channel, msg]) => {
+            this.SendSound(2);
+        });
         
         // this.PeerClient = Trivia.Get("network")
         // this.PeerClient.listen("json-data", ([ target, message ]) => {
@@ -60,11 +63,16 @@ class App extends Component {
         //  ----- END DEMO -----
     }
 
-    SendSound() {
-        //a 4 voice Synth
-        var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
-        //play a chord
-        polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "0.2");
+    SendSound(value = 1) {
+        if(value === 1) {
+            var polySynth = new Tone.PolySynth(3, Tone.Synth).toMaster();
+            polySynth.triggerAttackRelease(["C4", "E4", "A3"], "0.2");
+        } else if(value === 2) {
+            //a 4 voice Synth
+            var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+            //play a chord
+            polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "0.2");
+        }
 
         // var loop = new Tone.Loop(function(time) {
         //     polySynth.triggerAttackRelease(["C4", "E4", "G3", "A3"], "2n", time);

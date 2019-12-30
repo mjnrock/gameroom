@@ -20,6 +20,8 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
 
         this.Connector.on("connection", dataConn => {
             this.Register(dataConn.peer, dataConn);
+
+            this.call("data-connection", dataConn);
         });
         // this.Connector.on("disconnected", dataConn => {
         //    // TODO Get disconnected ID ?
@@ -30,6 +32,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         this.prop("Connections", {});
 
         this.on("json-data");
+        this.on("data-connection");
     }
 
     ReceiveJSON(json) {

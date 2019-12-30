@@ -4,18 +4,13 @@ import TriviaHandler from "./TriviaHandler";
 import Modules from "./../../../modules/package";
 
 export default class App extends Main {
-    constructor(comp) {
+    constructor() {
         super(
             "trivia",
             new TriviaHandler()
         );
 
-        this.Handler.AttachController(this);        
-        this.Handler.AttachListeners();
-
-        // setInterval(() => comp.setState({
-        //     cat: comp.state.cat + 1
-        // }), 500);
+        this.PostInit();
     }
 
     Get(module) {

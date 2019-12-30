@@ -36,6 +36,16 @@ export default class Handler extends Lux.Core.ClassDecorators.StateEvents {
      * @param {string} type The expected type of @msg (e.g. JSON, Binary, etc.)
      */
     ReceiveMessage(msg, type = "json") {
-        //TODO Route the message
+        this.Controller.Get("chat").Get(msg.Channel).AddMessage(msg.Message);
+    }
+
+    AttachListeners() {
+        if(this.Controller) {
+            this.Controller.Get("network").listen("message-extraction", ([ controller, msg ]) => {
+                this.ReceiveMessage(msg.Data, msg.Type);
+            });
+        } else {
+            throw new Error("No Controller has been defined");
+        }
     }
 };
