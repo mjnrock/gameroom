@@ -14,12 +14,24 @@ export default class ControllerManager extends AModuleManager {
             "user-event": {
                 "keydown": 50,
                 "keyup": 50,
+
+                "mousedown": 50,
+                "mouseup": 50,
+                "click": 50,
+                "dblclick": 50,
+                "mousemove": 50
             }
         });
         this.prop("Log", { // Last time that event was called
             "user-event": {
                 "keydown": 0,
                 "keyup": 0,
+
+                "mousedown": 0,
+                "mouseup": 0,
+                "click": 0,
+                "dblclick": 0,
+                "mousemove": 0
             }
         });
 
@@ -28,11 +40,18 @@ export default class ControllerManager extends AModuleManager {
 
         this.SetControllers(controllers);
 
-        //! This is off for DEBUGGING reasons only, so as not to pollute `console.log`
+        //! These are commented for DEBUGGING reasons only, so as not to pollute `console.log`
         //? Once the Handler has been finalized, this won't have to result in that console logging
         this.AttemptHTMLBindings([
             "onkeydown",
-            "onkeyup"
+            "onkeyup",
+            // "onkeypress",
+
+            // "onmousedown",
+            // "onmouseup",
+            // "onmousemove",
+            "onclick",
+            "ondblclick",
         ]);
     }
 
@@ -42,26 +61,46 @@ export default class ControllerManager extends AModuleManager {
     ]) {
         if(window) {
             let keyListener = (e) => {
-                let now = Date.now(),
-                    Throttle = this.prop("Throttle"),
-                    Log = this.prop("Log"),
-                    evt = "user-event";
+                    let now = Date.now(),
+                        Throttle = this.prop("Throttle"),
+                        Log = this.prop("Log"),
+                        evt = "user-event";
 
-                if(now - Throttle[ evt ][ e.type ] >= Log[ evt ][ e.type ]) {
-                    this.call(evt, [
-                        e.type,
-                        e.which,
-                        e
-                    ]);
-                    
-                    Log[ evt ][ e.type ] = now;
-                    this.prop("Log", Log);
+                    if(now - Throttle[ evt ][ e.type ] >= Log[ evt ][ e.type ]) {
+                        this.call(evt, [
+                            e.type,
+                            e.which,
+                            e
+                        ]);
+                        
+                        Log[ evt ][ e.type ] = now;
+                        this.prop("Log", Log);
+                    }
+                },
+                mouseListener = (e) => {
+                    let now = Date.now(),
+                        Throttle = this.prop("Throttle"),
+                        Log = this.prop("Log"),
+                        evt = "user-event";
+
+                    if(now - Throttle[ evt ][ e.type ] >= Log[ evt ][ e.type ]) {
+                        this.call(evt, [
+                            e.type,
+                            [ e.clientX, e.clientY, "client" ],
+                            [ e.screenX, e.screenY, "screen" ],
+                            e
+                        ]);
+                        
+                        Log[ evt ][ e.type ] = now;
+                        this.prop("Log", Log);
+                    }
                 }
-            }
 
             for(let event of bindings) {
                 if(event.includes("key")) {
                     window[ event ] = (e) => keyListener(e);
+                } else {
+                    window[ event ] = (e) => mouseListener(e);
                 }
             }
         }
