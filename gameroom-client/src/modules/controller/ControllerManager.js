@@ -56,8 +56,9 @@ export default class ControllerManager extends AModuleManager {
     }
 
     AttemptHTMLBindings(bindings = [
-        "onkeydown",
-        "onkeyup"
+        "onkeypress",
+        "onclick",
+        "ondblclick"
     ]) {
         if(window) {
             let keyListener = (e) => {
