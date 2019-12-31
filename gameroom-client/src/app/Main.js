@@ -19,9 +19,14 @@ export default class Main extends Lux.Core.ClassDecorators.StateEvents {
 
             this.Controller = new Modules.Controller.ControllerManager();
             
-            this.Registry.Register(this.Network);
-            this.Registry.Register(this.Chat);
-            this.Registry.Register(this.Controller);
+            // this.Registry.Register(this.Network);
+            // this.Registry.Register(this.Chat);
+            // this.Registry.Register(this.Controller);
+            this.Registry.Register(
+                this.Network,
+                this.Chat,
+                this.Controller
+            );
     }
 
     PostInit() {

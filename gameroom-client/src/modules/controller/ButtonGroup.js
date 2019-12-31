@@ -3,7 +3,7 @@ import Button from "./Button";
 
 //? Any easy subscribale/tidier for a given group of buttons with "IsActive" status awareness
 export default class ButtonGroup extends AControl {
-    constructor(buttons = []) {
+    constructor(name, buttons = []) {
         super(name);
 
         this.prop("Bitmask", 0);

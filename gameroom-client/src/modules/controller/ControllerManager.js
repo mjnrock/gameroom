@@ -1,4 +1,5 @@
 import AModuleManager from "./../AModuleManager";
+import Controller from "./Controller";
 
 export default class ControllerManager extends AModuleManager {
     constructor(controllers = []) {
