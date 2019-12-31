@@ -35,3 +35,23 @@ export default class DPad extends ButtonGroup {
         return this.maskButton(3, mask);
     }
 };
+
+
+//* Example Usage
+// let dpad = new DPad("pos");
+
+// dpad.listen("bitmask-update", ([ btnGrp, mask, [ index, flag ]]) => {
+//     console.log("-----------------------");
+//     console.log(btnGrp);
+//     console.log(mask);
+//     console.log(index);
+//     console.log(flag);
+//     console.log("-----------------------");
+// });
+
+// dpad.Up(true);
+// dpad.Down(true);
+// dpad.Left(true);
+
+// dpad.Left(false);
+// dpad.Down(false);
