@@ -30,10 +30,16 @@ export default class ControllerManager extends AModuleManager {
 
         //! This is off for DEBUGGING reasons only, so as not to pollute `console.log`
         //? Once the Handler has been finalized, this won't have to result in that console logging
-        this.AttemptHTMLBindings();
+        this.AttemptHTMLBindings([
+            "onkeydown",
+            "onkeyup"
+        ]);
     }
 
-    AttemptHTMLBindings() {        
+    AttemptHTMLBindings(bindings = [
+        "onkeydown",
+        "onkeyup"
+    ]) {
         if(window) {
             let keyListener = (e) => {
                 let now = Date.now(),
@@ -53,8 +59,11 @@ export default class ControllerManager extends AModuleManager {
                 }
             }
 
-            window.onkeydown = (e) => keyListener(e);
-            window.onkeyup = (e) => keyListener(e);
+            for(let event of bindings) {
+                if(event.includes("key")) {
+                    window[ event ] = (e) => keyListener(e);
+                }
+            }
         }
     }
 
