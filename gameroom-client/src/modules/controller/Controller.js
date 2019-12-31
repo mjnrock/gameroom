@@ -22,8 +22,8 @@ export default class Controller extends AControl {
                 Controls[ control.UUID() ] = control;
     
                 if(control instanceof ActiveControl) {
-                    control.listen("activate", () => this.call("control-event"));
-                    control.listen("deactivate", () => this.call("control-event"));
+                    control.listen("activate", () => this.call("control-event", "activate", control));
+                    control.listen("deactivate", () => this.call("control-event", "deactivate", control));
                 }
                 if(control instanceof ButtonGroup) {
                     control.listen("bitmask-update", () => this.call("control-event"));

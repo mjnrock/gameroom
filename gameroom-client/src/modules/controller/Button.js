@@ -1,4 +1,4 @@
-import ActiveControl from "./AControl";
+import ActiveControl from "./ActiveControl";
 
 export default class Button extends ActiveControl {
     constructor(name) {

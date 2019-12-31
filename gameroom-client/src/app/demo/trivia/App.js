@@ -11,6 +11,13 @@ export default class App extends Main {
         );
 
         this.PostInit();
+
+        //? This invocation works, so Controller<Module> should be good to start testing/building
+        let btn = new Modules.Controller.Button("btn");
+        this.Controller.SetControllers(new Modules.Controller.Controller("main", [
+            btn
+        ]));
+        btn.call("activate", "ACTIVATED");
     }
 
     Get(module) {
