@@ -6,6 +6,8 @@ import ButtonGroup from "./ButtonGroup";
 
 import Controller from "./Controller";
 
+import ControllerManager from "./ControllerManager";
+
 export default {
     AControl,
     ActiveControl,
@@ -13,5 +15,7 @@ export default {
     Button,
     ButtonGroup,
 
-    Controller
+    Controller,
+
+    ControllerManager
 };

@@ -16,9 +16,12 @@ export default class Main extends Lux.Core.ClassDecorators.StateEvents {
 
             this.Chat = new Modules.Chat.ChannelManager();
             this.Chat.CreateChannel("Lobby");
+
+            this.Controller = new Modules.Controller.ControllerManager();
             
             this.Registry.Register(this.Network);
             this.Registry.Register(this.Chat);
+            this.Registry.Register(this.Controller);
     }
 
     PostInit() {
