@@ -40,8 +40,21 @@ export default class Handler extends Lux.Core.ClassDecorators.StateEvents {
             data = msg.data;
 
         if(module === "chat" && !filter.includes("chat")) {      
-            if(event === "message") {
+            if(event === "message") {                
+                /* //! Currently this is the message form that Chat<Module> is sending and should be standardized
+                data = {
+                    Channel: "Lobby"​
+                    Type: "ChatMessage"
+                    Message: {
+                        Author: 14                ​​
+                        Content: "1756"                ​​
+                        Timestamp: 1577827945861                ​​
+                        UUID: "010e918b-f0af-4859-8811-fe3066781343"
+                    }
+                }
+                */
                 console.log(data);
+
                 this.Controller.Get("chat").Get(data.Channel).AddMessage(data.Message);
             }
         } else if(module === "network" && !filter.includes("network")) {
