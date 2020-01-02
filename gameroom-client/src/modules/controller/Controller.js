@@ -46,7 +46,7 @@ export default class Controller extends AControl {
             controlEventCaller = (a, [ e, cntrl ]) => this.call("control-event", e, cntrl, Array.isArray(a) ? a : [ a ]),
             subControlEventCaller = (a, [ e, cntrl ]) => this.call("sub-controller-event", e, cntrl, Array.isArray(a) ? a : [ a ]);
 
-        //TODO This should be abstracted to a generalized "SubscribeALl" function
+        //TODO This should be abstracted to a generalized "SubscribeALl" function, that should go through ALL children and descendents
         for(let control of controls) {
             if(control instanceof AControl) {
                 Controls[ control.UUID() ] = control;
