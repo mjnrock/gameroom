@@ -26,6 +26,10 @@ export default class App extends Main {
             b
         ]));
 
+        dpad.watch("Bitmask", (k, v) => {
+            console.log(k, v);
+        });
+
         // dpad.listen("bitmask-update", ([ btnGrp, mask, [ index, flag ]]) => {
         //     console.log("-----------------------");
         //     console.log(btnGrp);
