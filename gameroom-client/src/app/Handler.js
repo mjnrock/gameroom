@@ -38,6 +38,7 @@ export default class Handler extends Lux.Core.ClassDecorators.StateEvents {
      */
     ReceiveMessage(msg, type = "json", filter = []) {}
 
+    //TODO These messages should be standardized into a "ModuleMessage" class
     AttachListeners() {
         if(this.Controller) {
             this.Controller.Get("network").listen("message-extraction", ([ controller, chatMessage ], [ e ]) => {
