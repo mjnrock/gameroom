@@ -46,6 +46,7 @@ export default class Controller extends AControl {
             controlEventCaller = (a, [ e, cntrl ]) => this.call("control-event", e, cntrl, Array.isArray(a) ? a : [ a ]),
             subControlEventCaller = (a, [ e, cntrl ]) => this.call("sub-controller-event", e, cntrl, Array.isArray(a) ? a : [ a ]);
 
+        //TODO This should be abstracted to a generalized "SubscribeALl" function
         for(let control of controls) {
             if(control instanceof AControl) {
                 Controls[ control.UUID() ] = control;
@@ -57,12 +58,19 @@ export default class Controller extends AControl {
 
                 if(control instanceof ButtonGroup) {
                     control.listen("bitmask-update", controlEventCaller);
+
+                    for(let btn of control.prop("Buttons")) {
+                        btn.listen("activate", controlEventCaller);
+                        btn.listen("deactivate", controlEventCaller);
+                    }
                 }
 
                 if(control instanceof Controller) {
                     control.listen("control-event", controlEventCaller);
                     //? Special event to route all "control-event" (again) and make it easier to puppet sub-controllers
                     control.listen("control-event", subControlEventCaller);
+
+                    //TODO Subscribe to ALL Controller's children, including ALL descendency
                 }
             }
         }

@@ -70,7 +70,10 @@ class App extends Component {
                         [ control.prop("Name") ]: control.prop("Bitmask")
                     }
                 });
+                console.log(event, control);
             } else if(event === "activate") {
+                console.log(event, control);
+            } else if(event === "deactivate") {
                 console.log(event, control);
             }
         });

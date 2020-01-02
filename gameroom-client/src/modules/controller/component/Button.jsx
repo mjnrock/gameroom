@@ -8,7 +8,8 @@ export default class Button extends Component {
     render() {
         return (
             <button
-                className="btn btn-primary"
+                className={ this.props.className ? this.props.className : `btn btn-primary` }
+                style={ this.props.style ? this.props.style : null }
                 onMouseDown={ () => this.props.src.Activate() }
                 onMouseUp={ () => this.props.src.Deactivate() }
             >
