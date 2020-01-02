@@ -42,25 +42,27 @@ export default class Controller extends AControl {
     }
 
     SetControls(controls) {
-        let Controls = {};
+        let Controls = {},
+            controlEventCaller = (a, [ e, cntrl ]) => this.call("control-event", e, cntrl, Array.isArray(a) ? a : [ a ]),
+            subControlEventCaller = (a, [ e, cntrl ]) => this.call("sub-controller-event", e, cntrl, Array.isArray(a) ? a : [ a ]);
 
         for(let control of controls) {
             if(control instanceof AControl) {
                 Controls[ control.UUID() ] = control;
     
                 if(control instanceof ActiveControl) {
-                    control.listen("activate", () => this.call("control-event", "activate", control));
-                    control.listen("deactivate", () => this.call("control-event", "deactivate", control));
+                    control.listen("activate", controlEventCaller);
+                    control.listen("deactivate", controlEventCaller);
                 }
 
                 if(control instanceof ButtonGroup) {
-                    control.listen("bitmask-update", () => this.call("control-event", "bitmask-update", control));
+                    control.listen("bitmask-update", controlEventCaller);
                 }
 
                 if(control instanceof Controller) {
-                    control.listen("control-event", () => this.call("control-event", control));
+                    control.listen("control-event", controlEventCaller);
                     //? Special event to route all "control-event" (again) and make it easier to puppet sub-controllers
-                    control.listen("control-event", () => this.call("sub-controller-event", control));
+                    control.listen("control-event", subControlEventCaller);
                 }
             }
         }
