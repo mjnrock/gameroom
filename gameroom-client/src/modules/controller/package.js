@@ -9,6 +9,9 @@ import Controller from "./Controller";
 
 import ControllerManager from "./ControllerManager";
 
+
+import Component from "./component/package";
+
 export default {
     AControl,
     ActiveControl,
@@ -19,5 +22,7 @@ export default {
 
     Controller,
 
-    ControllerManager
+    ControllerManager,
+
+    Component
 };

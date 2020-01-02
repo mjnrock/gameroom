@@ -38,7 +38,9 @@ export default class ControllerManager extends AModuleManager {
         this.on("controller-event");
         this.on("user-event");
 
-        this.SetControllers(controllers);
+        if(controllers.length) {
+            this.SetControllers(controllers);
+        }
 
         //! These are commented for DEBUGGING reasons only, so as not to pollute `console.log`
         //? Once the Handler has been finalized, this won't have to result in that console logging
@@ -107,12 +109,38 @@ export default class ControllerManager extends AModuleManager {
         }
     }
 
+    Get(nameOrUUID) {
+        let Controllers = this.prop("Controllers");
+
+        if(Controllers[ nameOrUUID ]) {
+            return Controllers[ nameOrUUID ];
+        }
+
+        for(let uuid in Controllers) {
+            if(Controllers[ uuid ].prop("Name") === nameOrUUID) {
+                return Controllers[ uuid ];
+            }
+        }
+
+        return false;
+    }
+    GetControllers() {
+        let obj = {},
+            Controllers = this.prop("Controllers");
+
+        for(let uuid in Controllers) {
+            obj[ Controllers[ uuid ].prop("Name") ] = Controllers[ uuid ].GetControls();
+        }
+
+        return obj;
+    }
+
     SetControllers(...controllers) {
-        let Controls = {};
+        let Controllers = {};
 
         for(let controller of controllers) {
             if(controller instanceof Controller) {
-                Controls[ controller.UUID() ] = controller;
+                Controllers[ controller.UUID() ] = controller;
 
                 controller.listen("control-event", ([ controller, event, control], [ controllerEvent ]) => {
                     this.call("controller-event", [ event, control, controller, controllerEvent ]);
@@ -120,6 +148,10 @@ export default class ControllerManager extends AModuleManager {
                 //* Not subscribing because it will double capture without a second handler, and really not necessary here at this time
                 // controller.listen("sub-controller-event", () => this.call("controller-event"));
             }
+        }
+
+        if(Object.entries(Controllers).length !== 0) {
+            this.prop("Controllers", Controllers);
         }
     }
 };

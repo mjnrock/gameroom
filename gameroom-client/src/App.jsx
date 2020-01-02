@@ -5,6 +5,7 @@ import Tone from "tone";
 // import PeerClient from "./lib/PeerClient";
 import Chat from "./modules/chat/package";
 import Network from "./modules/network/package";
+import Controller from "./modules/controller/package";
 
 import Demo from "./app/demo/package";
 
@@ -47,6 +48,10 @@ class App extends Component {
         //  ------- DEMO -------
         this.Trivia = new Demo.Trivia.App();
         console.log(this.Trivia);
+        
+        this.state = {
+            Bitmasks: {}
+        };
 
         //? Using MobX, inject Chat Message into store, sent from Network module and received by TriviaHandler
         this.Trivia.Get("chat").listen("channel-message", ([ cm, channel, msg]) => {
@@ -54,6 +59,20 @@ class App extends Component {
         });
         this.Trivia.Get("network").prop("Connector").listen("data-connection", ([ cm, channel, msg]) => {
             this.SendSound(2);
+        });
+        
+        this.Trivia.Get("controller").listen("controller-event", ([ cm, [ event, control ]]) => {
+            if(event === "bitmask-update") {
+                this.setState({
+                    ...this.state,
+                    Bitmasks: {
+                        ...this.state.Bitmasks,
+                        [ control.prop("Name") ]: control.prop("Bitmask")
+                    }
+                });
+            } else if(event === "activate") {
+                console.log(event, control);
+            }
         });
         
         // this.PeerClient = Trivia.Get("network")
@@ -135,8 +154,7 @@ class App extends Component {
 
     render() {
         const { ChatStore } = this.props.store;
-
-        console.log(this.Trivia.Get("network"))
+        const MainController = this.Trivia.Controller.GetControllers()[ "main" ];
 
         return (
             <div>
@@ -149,6 +167,27 @@ class App extends Component {
                     }}
                     onClick={ this.SendSound.bind(this) }
                 >Sound!</button>
+
+                <div>
+                    <div>{ this.state.Bitmasks[ "pos" ] || 0 }</div>
+                    {
+                        MainController[ "pos" ].prop("Buttons").map(
+                            btn => (
+                                <Controller.Component.Button
+                                    key={ btn.UUID() }
+                                    src={ btn }
+                                />
+                            )
+                        )
+                    }
+                    
+                    <Controller.Component.Button
+                        src={ MainController[ "a" ] }
+                    />
+                    <Controller.Component.Button
+                        src={ MainController[ "b" ] }
+                    />
+                </div>
 
                 <div className="container">
                     <h3>{ this.Trivia.Get("network").prop("ConnectorID") }</h3>
