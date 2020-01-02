@@ -34,45 +34,9 @@ export default class Handler extends Lux.Core.ClassDecorators.StateEvents {
      * The entry method for handling a message from some event or delivery bus
      * @param {any} msg The actual payload
      * @param {string} type The expected type of @msg (e.g. JSON, Binary, etc.)
+     * @param {Array} filter Contains list of Module.prop("Name") that should be ignored by the Handler
      */
-    ReceiveMessage(msg, type = "json", filter = []) {
-        let [ module, event ] = msg.type.split("."),
-            data = msg.data;
-
-        if(module === "chat" && !filter.includes("chat")) {      
-            if(event === "message") {                
-                /* //! Currently this is the message form that Chat<Module> is sending and should be standardized
-                data = {
-                    Channel: "Lobby"​
-                    Type: "ChatMessage"
-                    Message: {
-                        Author: 14                ​​
-                        Content: "1756"                ​​
-                        Timestamp: 1577827945861                ​​
-                        UUID: "010e918b-f0af-4859-8811-fe3066781343"
-                    }
-                }
-                */
-                console.log(data);
-
-                this.Controller.Get("chat").Get(data.Channel).AddMessage(data.Message);
-            }
-        } else if(module === "network" && !filter.includes("network")) {
-            if(event === "message-extraction") {
-                //! This is a PoC line below, and should not actually be here, but instead a proper generalization of this
-                this.ReceiveMessage({
-                    type: "chat.message",
-                    data: data.data
-                });
-            }
-        } else if(module === "controller" && !filter.includes("controller")) {
-            if(event === "user-event") {
-                console.log(event, data);
-            } else if(event === "controller-event") {
-                console.log(event, data);
-            }
-        }
-    }
+    ReceiveMessage(msg, type = "json", filter = []) {}
 
     AttachListeners() {
         if(this.Controller) {
