@@ -9,7 +9,7 @@ class PeerClient extends Lux.Core.ClassDecorators.StateEvents {
         this.prop("ID", +(Math.floor(Math.random() * 100)));
 
         this.Config = server || {
-            host: "192.168.86.97",
+            host: "192.168.86.102",
             port: 3001,
             path: "/peer"
         };

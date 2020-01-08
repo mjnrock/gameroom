@@ -1,3 +1,5 @@
+//* https://webrtchacks.com/guide-to-safari-webrtc/
+
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
@@ -99,11 +101,11 @@ server.get("/v", (req, res) => {
 var privateKey = fs.readFileSync( './certificates/key.pem' );
 var certificate = fs.readFileSync( './certificates/cert.pem' );
 
-const SERVER = server.listen(App.Server.Port);
-// const SERVER = https.createServer({
-//     key: privateKey,
-//     cert: certificate
-// }, server).listen(App.Server.Port + 1);
+// const SERVER = server.listen(App.Server.Port);
+const SERVER = https.createServer({
+    key: privateKey,
+    cert: certificate
+}, server).listen(App.Server.Port);
 
 const peerOptions = {
     debug: true,
