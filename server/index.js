@@ -1,4 +1,7 @@
 //* https://webrtchacks.com/guide-to-safari-webrtc/
+//* Firefox Workaround for HTTPS
+//* URL - about:config
+//* Setting - network.websocket.allowInsecureFromHTTPS = true
 
 const fs = require("fs");
 const path = require("path");
